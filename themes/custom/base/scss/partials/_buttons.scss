@@ -1,0 +1,172 @@
+.site-wrap {
+    .btn {
+        border-radius:0;
+        border:0;
+        box-shadow:none!important;
+        outline:none!important;
+        font-family: $font-sans;
+        font-size:16px;
+        font-weight: 600;
+        line-height:20px;
+        margin-bottom: 15px;
+        padding:12px 40px;
+        position: relative;
+        text-align: center;
+        text-decoration:none!important;
+        z-index: 1;
+        @include transition(background .3s linear, color .3s linear);
+        &.small {
+            font-size:14px;
+            line-height: 18px;
+            padding:10px 25px;
+        }
+        &.clear {
+            color:#fff!important;
+            border:1px solid #fff; 
+            background:rgba(255,255,255,.1);
+            &:hover {
+                background: rgba(255,255,255,.2);
+                color:#fff;
+            }
+        }
+        &.primary {
+            background:$primary;
+            color:#fff;
+            &:hover, &:focus {
+                background: darken($primary, 10%);
+                &::after {
+                    width: 100%;
+                }
+            }
+            &.outline {
+                border-color: $primary;
+                color: $primary;
+                &:hover, &:focus {
+                    background: $primary;
+                    color: #fff;
+                }
+            }
+        }
+        &.secondary {
+            background: $secondary;
+            color:$dk-gray;
+            &:hover, &:focus {
+                background: darken($secondary, 10%);
+                &::after {
+                    width: 100%;
+                }
+            }
+            &.outline {
+                border-color: $secondary;
+                color: $secondary;
+                &:hover, &:focus {
+                    background: $secondary;
+                    color: $dk-gray;
+                }
+            }
+        }
+        &.tertiary {
+            background:$tertiary;
+            color: #fff;
+            &:hover, &:focus {
+                background: darken($tertiary, 10%);
+                &::after {
+                    width: 100%;
+                }
+            }
+            &.outline {
+                border-color: $tertiary;
+                color: $tertiary;
+                &:hover, &:focus {
+                    background: $tertiary;
+                    color: #fff;
+                }
+            }
+        }
+        &.gray {
+            background:$gray;
+            color:#fff;
+            &:hover, &:focus {
+                background: $md-gray;
+                &::after {
+                    width: 100%;
+                }
+            }
+        }
+        &.black {
+            background:#000;
+            color:#fff;
+            &:hover, &:focus {
+                background: $md-gray;
+            }
+        }
+        &.outline {
+            background: none;
+            border: 2px solid;
+        }
+        &.link {
+            background:transparent;
+            color: $dk-gray;
+            font-size: 18px;
+            font-weight: 800;
+            margin: 0;
+            padding: 0 50px 0 0;
+            position: relative;
+            text-align: left;
+            &::after {
+                color: $secondary;
+                content: "\e901";
+                font-family: icomoon;
+                font-size: 26px;
+                line-height: 20px;
+                position: absolute;
+                right: 15px;
+                @include transition(right .3s $cubic);
+            }
+            &:hover, &:focus {
+                &::after {
+                    right:0;
+                }
+            }
+        }
+    }
+    .more-link {
+        display: block;
+        margin: 20px 0;
+        a {
+            background:$secondary;
+            border-radius:0;
+            border:0!important;
+            box-shadow:none!important;
+            color:#fff!important;
+            outline:none!important;
+            font-weight: 700;
+            font-size:18px;
+            letter-spacing: 1px;
+            line-height:40px;
+            padding:10px 25px;
+            position: relative;
+            text-align: left;
+            text-decoration:none!important;
+            text-transform: uppercase;
+            z-index: 1;
+            @include transition(background .3s linear, color .3s linear);
+            &::after {
+                content: "";
+                background: darken($secondary, 25%);
+                position: absolute;
+                height: 3px;
+                width:0;
+                left: 0;
+                bottom: 0;
+                @include transition(width .3s $cubic);
+            }
+            &:hover, &:focus {
+                background: darken($secondary, 10%);
+                &::after {
+                    width: 100%;
+                }
+            }
+        }
+    }
+}

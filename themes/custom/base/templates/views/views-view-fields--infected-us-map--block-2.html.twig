@@ -1,0 +1,22 @@
+{% for field in fields -%}
+{%  set counter = counter + 1 %}
+{% if counter == 1  %}
+{% set infocount = field.content|trim %}
+  {% if infocount >= 1000 %}
+  {% set color = '#000000' %}
+  {% endif %}
+  {% if infocount < 1000 and infocount >= 100  %}
+  {% set color = '#444444' %}
+  {% endif %}
+  {% if infocount < 100 and infocount > 0 %}
+  {% set color = '#777777' %}
+  {% endif %}
+  {% if infocount is defined and infocount < 1 %}
+  {% set color = '#dddddd' %}
+  {% endif %}
+
+{% endif %}
+  {% if counter == 2 %}
+  {{ field.content|replace({ '#990000': color })|raw }}
+  {% endif %}
+{%- endfor %}

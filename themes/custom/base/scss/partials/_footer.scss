@@ -1,0 +1,33 @@
+.footer {
+    background: $dk-gray;
+    color: #fff;
+    margin-top: 60px;
+    padding:45px 0;
+    @include breakpoint(sm-max) {
+        padding: 25px 15px;
+    }
+    p {
+        color: #fff;
+        font-size:16px;
+        line-height: 24px;
+        a {
+            color: $gold;
+            &:hover, &:focus {
+                color: #fff;
+            }
+        }
+    }
+    .social {
+        a {
+            color: #fff;
+            display: inline-block;
+            font-size: 21px;
+            &:hover, &:focus {
+                color:$teal;
+            }
+            + a {
+                margin-left: 20px;
+            }
+        }
+    }
+}

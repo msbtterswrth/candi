@@ -1,0 +1,143 @@
+@charset "UTF-8";
+.site-wrap {    
+    section {
+        position:relative;
+        .container {
+            position:relative;
+            height: 100%;
+        }
+        &.navigation {
+            background:#f5f5f5;
+            padding: 11px 0;
+            .breadcrumb {
+                padding: 0 15px;
+            }
+        }
+        &.main {
+            .content {
+                margin-top: 60px;
+                @include breakpoint(sm-max) {
+                    margin-top: 20px;
+                }
+            }
+            .sidebar {
+                &.bottom {
+                    @include breakpoint(sm-max) {
+                        margin-top: 30px;
+                    }
+                }
+                .nav {
+                    border-left: 5px solid $tertiary;
+                    margin-bottom: 30px;
+                    padding:0 0 0 20px;
+                    @include breakpoint(sm-max) {
+                        border: none;
+                        padding: 0;
+                    }
+                    .nav-toggle {
+                        background: $tertiary;
+                        color: #fff;
+                        display:none;
+                        letter-spacing: 1px;
+                        padding: 5px 10px;
+                        position: relative;
+                        text-transform: uppercase;
+                        @include breakpoint(sm-max) {
+                            display: block;
+                        }
+                        &::after {
+                            content: "\e906";
+                            font-family: icomoon;
+                            float: right;
+                        }
+                        &.open {
+                            &::after {
+                                content: "\e5cd";
+                            }
+                            + div {
+                                border-color: $tertiary;
+                            }
+                        }
+                        + div {
+                            @include breakpoint(sm-max) {
+                                border: 2px solid transparent;
+                                max-height: 0;
+                                overflow: hidden;
+                                nav {
+                                    padding: 10px;
+                                }
+                            }
+                        }
+                    }
+                    ul:not(.contextual-links) {
+                        list-style-type: none;
+                        padding:0;
+                        margin:0;
+                        li {
+                            margin-bottom: 12px;
+                            line-height: 21px;
+                            &.level-1 {
+                                display:none;
+                                &.active-trail {
+                                    display: block;
+                                    > a {
+                                        display: block;
+                                        font-size: 14px;
+                                        font-weight: 700;
+                                        letter-spacing: 1px;
+                                        margin-bottom: 10px;
+                                        text-transform: uppercase;
+                                    }
+                                }
+                                > ul {
+                                    .level-2 {
+                                        > ul {   
+                                            margin:10px 0 0 10px;
+                                            .level-3 {
+                                                > ul {
+                                                    border-left: 2px solid lighten($tertiary,10%);
+                                                    margin:10px 0 0 10px;       
+                                                    padding-left: 10px;
+                                                    .level-4 {
+                                                        a {
+                                                            font-size: 14px                                                            
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }                                
+                                }
+                            }
+                            a {
+                                font-size: 16px;
+                                line-height: 21px;
+                                color: $dk-gray;
+                                &:hover, &:focus {
+                                    color:$tertiary;
+                                }
+                                &.is-active {
+                                    color:$tertiary;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            + .feature {
+                margin-top:40px;
+            }
+            + .footer {
+                margin-top:80px;
+                @include breakpoint(sm-max) {
+                    margin-top: 20px;
+                }
+            }
+        }
+        &.feature {            
+            + .footer {
+                margin-top:0;
+            }
+        }
+    }
+}

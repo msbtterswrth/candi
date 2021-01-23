@@ -1,0 +1,163 @@
+.site-wrap {
+    &::before {
+        background: #000;
+        content: "";
+        height: 100%;
+        left: 0;
+        opacity: 0;
+        position: absolute;
+        top: 0;
+        width: 100%;
+        z-index: -1;
+        @include transition(opacity .3s linear .1s);
+        .nav-open & {
+            opacity: .4;
+            z-index: 2;
+        }
+    }
+    .header {
+        background: #000;
+        padding:20px 0;
+        position: relative;
+        width: 100%;
+        z-index: 9;
+        .nav-toggle {
+            display: none;
+            float: right;
+            margin-top: 12px;
+            @include breakpoint(sm-max) {
+                display: block;    
+            }
+            .nav-open & {
+                margin-bottom: 10px;
+            }
+            &:hover {
+                span {
+                    &:nth-of-type(1) {
+                        background:$teal;
+                    }
+                    &:nth-of-type(2) {
+                        background:$teal;
+                        margin-left: 0;
+                    }
+                    &:nth-of-type(3) {
+                        background: $teal;
+                    }
+                }
+            }
+            span {
+                background: $dk-blue;
+                border-radius: 3px;
+                display: block;
+                width: 25px;
+                height: 4px;
+                margin-bottom: 3px;
+                transform-origin: center;
+                @include transition(margin .3s $cubic, transform .3s $cubic, background .3s linear);
+                &:nth-of-type(2) {
+                    margin-left: -3px;
+                }        
+                .nav-open & {
+                    &:nth-of-type(1) {
+                        background:$teal;
+                        margin-bottom: -4px;
+                        transform: rotate(45deg);
+                    }
+                    &:nth-of-type(2) {
+                        background:$teal;
+                        margin-left: 0;
+                        transform: rotate(-45deg);
+                    }
+                    &:nth-of-type(3) {
+                        display: none;
+                    }
+                }
+            }
+        }
+        .menu {
+            text-align: right;
+            @include breakpoint(sm-max) {
+                background: #fff;
+                max-height:0;
+                min-height: 100vh;
+                overflow: hidden;
+                position: absolute;
+                right: 0;
+                text-align: left;
+                top: calc(100% + 20px);
+                width:0;
+                z-index: 9;
+                @include transition(width .3s $cubic)
+            }
+            .nav-open & {
+                width: 80vw;
+            }
+            nav {            
+                @include breakpoint(sm-max) {
+                    padding:30px 15px;
+                }
+                ul:not(.contextual-links) {    
+                    margin: 10px 0 0 0;
+                    @include breakpoint(sm-max) {
+                        margin:0;
+                        padding:0;
+                        list-style-type: none;
+                        text-align:left;
+                    }
+                    li {
+                        &.level-1{
+                            display: inline-block;
+                            margin: 0 0 0 15px;
+                            @include breakpoint(sm-max) {
+                                display:block;
+                                + li {
+                                    margin-top:15px;
+                                }
+                            }
+                        }
+                        a {
+                            &.btn {
+                                border-radius: 30px;
+                                font-size: 14px;
+                                line-height: 21px;
+                                padding: 5px 25px 7px;
+                                vertical-align: 2px;
+                                @include breakpoint(sm-max) {
+                                    background:none;
+                                    color: $secondary;
+                                    font-size: 18px;
+                                    padding:0;
+                                    text-decoration:none;
+                                }
+                            }
+                            &:not(.btn) {
+                                position: relative;
+                                @include underline;
+                                @include breakpoint(sm) {
+                                    font-size:14px
+                                }
+                                @include breakpoint(xs) {
+                                    color:#fff;
+                                }
+                                &:focus, &.is-active {
+                                    color:$teal;
+                                }
+                                &::before {
+                                    background:$dk-blue;
+                                }
+                                &::after {
+                                    display: none
+                                }
+                                @include breakpoint(sm-max) {
+                                    color: $secondary;
+                                    font-size: 18px;
+                                    text-decoration:none;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } 
+    }
+}

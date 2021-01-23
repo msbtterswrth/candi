@@ -1,0 +1,17 @@
+{% set alignment = paragraph.field_text_position.value %}
+{% if content.field_image.0 %}
+    {% set class = "has-img" %}
+{% endif %}
+<div class="hero {{class}}">
+    <div class="img">      
+        {{ content.field_image }}
+    </div>
+    <div class="blurb {{alignment}}">
+        <div class="container">
+            <div class="inner">
+                <h1>{{content.field_title.0}}</h1>
+                {{ content.field_blurb }}
+            </div>
+        </div>
+    </div>
+</div>

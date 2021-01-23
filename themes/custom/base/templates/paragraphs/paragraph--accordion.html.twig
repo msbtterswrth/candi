@@ -1,0 +1,7 @@
+{% extends 'paragraph.html.twig' %}
+{% block content %}
+  <div class="accordion-item">
+    <h4{{ title_attributes }}>{{ content.field_title }}</h4>
+    <div>{{ content.field_blurb }}</div>
+  </div>
+{% endblock %}

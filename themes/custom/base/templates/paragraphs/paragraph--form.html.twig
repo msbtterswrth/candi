@@ -1,0 +1,11 @@
+{% extends 'paragraph.html.twig' %}
+{% block content %}
+{% if paragraph.field_background_color.value %}
+    {% set bg = " has-bg " ~ paragraph.field_background_color.value %}
+{% endif %}
+    <div class="section {{bg}}">
+        <div class="container">
+            {{content.field_form}}
+        </div>
+    </div>
+{% endblock %} 

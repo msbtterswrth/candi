@@ -1,0 +1,101 @@
+<script>
+  var simplemaps_usmap_mapdata = {
+    main_settings: {
+      //General settings
+      width: "responsive", //'700' or 'responsive'
+      background_color: "#FFFFFF",
+      background_transparent: "yes",
+      border_color: "#ffffff",
+      popups: "detect",
+      state_description: "",
+      state_color: "#cccccc",
+      state_hover_color: "#cccccc",
+      state_url: "",
+      border_size: 1.5,
+      all_states_inactive: "no",
+      all_states_zoomable: "no",
+
+      //Location defaults
+      location_description: "Add location markers using latitude and longitude!",
+      location_color: "#272F4D",
+      location_opacity: 0.8,
+      location_hover_opacity: 1,
+      location_url: "",
+      location_size: 25,
+      location_type: "square",
+      location_image_source: "frog.png",
+      location_border_color: "#FFFFFF",
+      location_border: 2,
+      location_hover_border: 2.5,
+      all_locations_inactive: "no",
+      all_locations_hidden: "no",
+
+      //Label defaults
+      label_color: "#ffffff",
+      label_hover_color: "#ffffff",
+      label_size: 22,
+      label_font: "Source Sans Pro', sans-serif",
+      hide_labels: "no",
+      hide_eastern_labels: "no",
+      manual_zoom: "no",
+      back_image: "no",
+      initial_back: "no",
+      initial_zoom: -1,
+      initial_zoom_solo: "no",
+      region_opacity: 1,
+      region_hover_opacity: 0.6,
+      zoom_out_incrementally: "yes",
+      zoom_percentage: 0.99,
+      zoom_time: 0.5,
+
+      //Popup settings
+      popup_color: "white",
+      popup_opacity: 0.9,
+      popup_shadow: 1,
+      popup_corners: 5,
+      popup_font: "12px/1.5 Verdana, Arial, Helvetica, sans-serif",
+      popup_nocss: "no",
+
+      //Advanced settings
+      div: "map",
+      auto_load: "yes",
+      url_new_tab: "no",
+      images_directory: "/static/lib/simplemaps/map_images/",
+      fade_time: 0.1,
+      import_labels: "yes",
+      link_text: "View Website",
+      state_image_url: "",
+      state_image_position: "",
+      location_image_url: ""
+    },
+    state_specific: {
+  {% if rows -%}
+    {{ rows }}
+  {% elseif empty -%}
+    {{ empty }}
+  {% endif %}
+    },
+    regions: {}
+  };
+  </script>
+<script src = "/themes/base/usmap.js"></script>
+<h1>Positive COVID-19 Cases in the US</h1>
+<div class = "legend">
+  <div style = "width: 20px; height: 20px; background-color:#d3bd03;
+ display: table-cell;"></div><div style ="display: table-cell;
+ vertical-align: middle; color: #000;padding-left: 10px;"> 0-999&nbsp;&nbsp;
+  </div>
+  <div style ="width:20px;height: 20px; background-color: #d68103;display:
+  table-cell;"></div><div style ="display: table-cell;
+ vertical-align: middle; color: #000;padding-left: 10px;"> 1,000-9,999&nbsp;
+    &nbsp;</div>
+  <div style="width:20px;height:20px;background-color: #d74f03;display:
+  table-cell;margin-top:10px;"></div>
+  <div style ="display: table-cell;
+ vertical-align: middle; color: #000;padding-left: 10px;"> 10,000-49,999&nbsp;
+    &nbsp;</div>
+  <div style = "width: 20px; height: 20px; background-color: #da0302;display:
+   table-cell;"></div><div style ="display: table-cell;
+ vertical-align: middle; color: #000;padding-left: 10px;"> 50,000+&nbsp;
+    &nbsp;</div>
+</div>

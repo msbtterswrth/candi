@@ -1,0 +1,19 @@
+.image-grid {
+    .images {
+        margin: 0 -15px;
+        .grid-col {
+            float: left;
+            padding: 0 15px;
+            width: 33.33%;
+            @include breakpoint(sm) {
+                width: 50%;
+            }
+            @include breakpoint(xs) {
+                width: 100%;
+            }
+            img {
+                margin-bottom: 15px; 
+            }
+        }
+    }
+}

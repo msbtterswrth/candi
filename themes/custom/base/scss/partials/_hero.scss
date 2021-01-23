@@ -1,0 +1,91 @@
+.hero {
+    margin-bottom: 60px;
+    position: relative;
+    @include breakpoint(sm-max) {
+        margin-bottom: 30px;
+    }
+    &:not(.has-img) {
+        background: $lt-gray;
+        color: $dk-gray;
+        padding:60px 0;
+        .blurb {
+            color: $dk-gray;
+            position: relative;            
+            top: 0;
+            @include translate(0,0);
+            h1 {
+                color: $dk-gray;
+            }
+        }
+    }
+    .img {
+        position: relative;
+        &::before {
+            background: #000;
+            content: "";
+            height: 100%;
+            left: 0;
+            opacity: .75;
+            position: absolute;
+            top: 0;
+            width: 100%;
+            z-index: 1;
+        }
+        img {
+            width: 100%;
+        }
+    }
+    .blurb {
+        color: #fff;
+        left: 0;
+        position: absolute;
+        text-align: center;
+        top: 50%;
+        width: 100%;
+        z-index: 1;
+        @include translate(0,-50%);
+        @include breakpoint(xs) {
+            padding-top: 100px;
+        }
+        &.center {
+            .inner {
+                margin: 0 auto;
+                text-align: center;
+                width:80%;
+            }
+        }
+        h1 {
+            color: #fff;
+            font-size: 65px;
+            line-height: 65px;
+            margin-bottom: 20px;
+            @include breakpoint(sm-max) {
+                font-size: 35px;
+                font-weight: 600;
+                line-height: 45px;
+                text-align: center;
+            }
+        }
+        p {
+            font-size: 24px;
+            line-height: 32px;
+            @include breakpoint(sm-max) {
+                font-size: 16px;
+                line-height: 21px;
+                text-align: center;
+            }
+        }
+        .btn {
+            @include breakpoint(sm-max) {
+                display:block;
+                margin-bottom: 10px;
+            }
+            + .btn {
+                margin-left: 10px;
+                @include breakpoint(sm-max) {
+                    margin-left: 0;
+                }
+            }
+        }
+    }
+}

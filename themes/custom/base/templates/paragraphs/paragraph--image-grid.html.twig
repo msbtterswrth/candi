@@ -1,0 +1,13 @@
+{% block content %}
+    <div class="image-grid"> 
+        {% if content.field_title.0 %}
+            <h2>{{content.field_title}}</h2>
+        {% endif %}
+        <div class="images clearfix">
+            <div class="grid-col grid-col--1"></div>
+            <div class="grid-col grid-col--2"></div>
+            <div class="grid-col grid-col--3"></div>
+            {{content.field_images}}
+        </div>
+    </div>
+{% endblock %} 

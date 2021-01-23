@@ -1,0 +1,72 @@
+.grid {
+    display: grid;
+    grid-template-rows: auto;
+    align-items: stretch;
+    justify-items: stretch;
+    margin-bottom: 30px;
+    &::before, &::after {
+        display:none!important;
+    }
+    //GUTTER SIZES
+    &.no-gutter {    
+        > div {
+            padding: 0;
+        }
+    }
+    &.normal {  
+        margin: 0 -7.5px;
+        > div {    
+            padding: 7.5px;
+        }
+    }  
+    &.lg-gutter { 
+        margin: 0 -15px; 
+        > div {      
+            padding: 15px;
+        }
+    }
+    //GRID COLUMNS
+    &.one {        
+        grid-template-columns: repeat(1, 1fr);
+    }
+    &.two {        
+        grid-template-columns: repeat(2, 1fr);
+        @include breakpoint(xs) {            
+            grid-template-columns: repeat(1, 1fr);
+        }
+        &.right {
+            grid-template-columns: 40% 60%;
+            @include breakpoint(xs) {            
+                grid-template-columns: repeat(1, 1fr);
+            }
+        }
+        &.left {
+            grid-template-columns: 60% 40%;
+            @include breakpoint(xs) {            
+                grid-template-columns: repeat(1, 1fr);
+            }
+        }
+    }
+    &.three {        
+        grid-template-columns: repeat(3, 1fr);
+        @include breakpoint(sm) {            
+            grid-template-columns: repeat(2, 1fr);
+        }
+        @include breakpoint(xs) {            
+            grid-template-columns: repeat(1, 1fr);
+        }
+    }
+    &.four {        
+        grid-template-columns: repeat(4, 1fr);
+        @include breakpoint(sm) {            
+            grid-template-columns: repeat(2, 1fr);
+        }
+        @include breakpoint(xs) {            
+            grid-template-columns: repeat(1, 1fr);
+        }
+    }
+    .text {
+        height: 100%;
+        margin: 0;
+    }
+}
