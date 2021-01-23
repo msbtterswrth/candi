@@ -17,7 +17,7 @@ class ElementTest extends BrowserTestBase {
    *
    * @var array
    */
-  protected static $modules = ['form_test'];
+  public static $modules = ['form_test'];
 
   /**
    * {@inheritdoc}
@@ -198,7 +198,7 @@ class ElementTest extends BrowserTestBase {
   }
 
   /**
-   * Tests a form with an autocomplete setting..
+   * Tests a form with a autocomplete setting..
    */
   public function testFormAutocomplete() {
     $this->drupalGet('form-test/autocomplete');

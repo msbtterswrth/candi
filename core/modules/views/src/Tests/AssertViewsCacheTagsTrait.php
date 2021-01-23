@@ -50,12 +50,13 @@ trait AssertViewsCacheTagsTrait {
     $request_stack->push($request);
     $renderer->renderRoot($build);
 
-    // Check render array cache tags.
+    // Render array cache tags.
+    $this->pass('Checking render array cache tags.');
     sort($expected_render_array_cache_tags);
     $this->assertEqual($build['#cache']['tags'], $expected_render_array_cache_tags);
 
     if ($views_caching_is_enabled) {
-      // Check Views render cache item cache tags.
+      $this->pass('Checking Views results cache item cache tags.');
       /** @var \Drupal\views\Plugin\views\cache\CachePluginBase $cache_plugin */
       $cache_plugin = $view->display_handler->getPlugin('cache');
 
@@ -75,7 +76,8 @@ trait AssertViewsCacheTagsTrait {
         $this->assertNull($results_cache_item, 'Results cache item not found.');
       }
 
-      // Check Views render cache item cache tags.
+      $this->pass('Checking Views render cache item cache tags.');
+
       $original['#cache'] += ['contexts' => []];
       $original['#cache']['contexts'] = Cache::mergeContexts($original['#cache']['contexts'], $this->container->getParameter('renderer.config')['required_cache_contexts']);
 
@@ -130,11 +132,12 @@ trait AssertViewsCacheTagsTrait {
     $request_stack->push($request);
     $renderer->renderRoot($build);
 
-    // Check render array cache tags.
+    // Render array cache tags.
+    $this->pass('Checking render array cache tags.');
     sort($expected_render_array_cache_tags);
     $this->assertEqual($build['#cache']['tags'], $expected_render_array_cache_tags);
 
-    // Check Views render cache item cache tags.
+    $this->pass('Checking Views render cache item cache tags.');
     $original['#cache'] += ['contexts' => []];
     $original['#cache']['contexts'] = Cache::mergeContexts($original['#cache']['contexts'], $this->container->getParameter('renderer.config')['required_cache_contexts']);
 

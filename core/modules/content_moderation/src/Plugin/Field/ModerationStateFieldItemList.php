@@ -174,12 +174,4 @@ class ModerationStateFieldItemList extends FieldItemList {
     }
   }
 
-  /**
-   * {@inheritdoc}
-   */
-  public function generateSampleItems($count = 1) {
-    // No sample items generated since the starting moderation state is always
-    // computed based on the default state of the associated workflow.
-  }
-
 }

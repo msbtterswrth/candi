@@ -17,7 +17,7 @@ class ColorTest extends BrowserTestBase {
    *
    * @var array
    */
-  protected static $modules = ['color', 'color_test', 'block', 'file'];
+  public static $modules = ['color', 'color_test', 'block', 'file'];
 
   /**
    * {@inheritdoc}
@@ -51,7 +51,7 @@ class ColorTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp(): void {
+  protected function setUp() {
     parent::setUp();
 
     // Create user.
@@ -113,16 +113,16 @@ class ColorTest extends BrowserTestBase {
     $this->drupalLogin($this->bigUser);
     $this->drupalGet($settings_path);
     $this->assertSession()->statusCodeEquals(200);
-    $this->assertSession()->pageTextContainsOnce('Color set');
+    $this->assertUniqueText('Color set');
     $edit['scheme'] = '';
     $edit[$test_values['palette_input']] = '#123456';
-    $this->drupalPostForm($settings_path, $edit, 'Save configuration');
+    $this->drupalPostForm($settings_path, $edit, t('Save configuration'));
 
     $this->drupalGet('<front>');
     $stylesheets = $this->config('color.theme.' . $theme)->get('stylesheets');
     // Make sure the color stylesheet is included in the content.
     foreach ($stylesheets as $stylesheet) {
-      $this->assertSession()->responseMatches('|' . file_url_transform_relative(file_create_url($stylesheet)) . '|');
+      $this->assertPattern('|' . file_url_transform_relative(file_create_url($stylesheet)) . '|');
       $stylesheet_content = implode("\n", file($stylesheet));
       $this->assertStringContainsString('color: #123456', $stylesheet_content, 'Make sure the color we changed is in the color stylesheet. (' . $theme . ')');
     }
@@ -130,7 +130,7 @@ class ColorTest extends BrowserTestBase {
     $this->drupalGet($settings_path);
     $this->assertSession()->statusCodeEquals(200);
     $edit['scheme'] = $test_values['scheme'];
-    $this->drupalPostForm($settings_path, $edit, 'Save configuration');
+    $this->drupalPostForm($settings_path, $edit, t('Save configuration'));
 
     $this->drupalGet('<front>');
     $stylesheets = $this->config('color.theme.' . $theme)->get('stylesheets');
@@ -144,7 +144,7 @@ class ColorTest extends BrowserTestBase {
     $config->set('css.preprocess', 1);
     $config->save();
     $this->drupalGet('<front>');
-    $stylesheets = \Drupal::state()->get('drupal_css_cache_files', []);
+    $stylesheets = \Drupal::state()->get('drupal_css_cache_files') ?: [];
     $stylesheet_content = '';
     foreach ($stylesheets as $uri) {
       $stylesheet_content .= implode("\n", file(\Drupal::service('file_system')->realpath($uri)));
@@ -168,7 +168,7 @@ class ColorTest extends BrowserTestBase {
 
     foreach ($this->colorTests as $color => $is_valid) {
       $edit['palette[bg]'] = $color;
-      $this->drupalPostForm($settings_path, $edit, 'Save configuration');
+      $this->drupalPostForm($settings_path, $edit, t('Save configuration'));
 
       if ($is_valid) {
         $this->assertText('The configuration options have been saved.');
@@ -188,7 +188,7 @@ class ColorTest extends BrowserTestBase {
       'default_logo' => FALSE,
       'logo_path' => 'core/misc/druplicon.png',
     ];
-    $this->drupalPostForm('admin/appearance/settings', $edit, 'Save configuration');
+    $this->drupalPostForm('admin/appearance/settings', $edit, t('Save configuration'));
 
     // Ensure that the overridden logo is present in Bartik, which is colorable.
     $this->drupalGet('admin/appearance/settings/bartik');
@@ -208,36 +208,30 @@ class ColorTest extends BrowserTestBase {
     $this->drupalPlaceBlock('system_branding_block', ['region' => 'header']);
 
     $this->drupalGet('');
-    // Make sure the color logo is not being used.
-    $this->assertNoRaw('files/color/bartik-');
-    // Make sure the original bartik logo exists.
-    $this->assertRaw('bartik/logo.svg');
+    $this->assertNoRaw('files/color/bartik-', 'Make sure the color logo is not being used.');
+    $this->assertRaw('bartik/logo.svg', 'Make sure the original bartik logo exists.');
 
     // Log in and set the color scheme to 'slate'.
     $this->drupalLogin($this->bigUser);
     $edit['scheme'] = 'slate';
-    $this->drupalPostForm($settings_path, $edit, 'Save configuration');
+    $this->drupalPostForm($settings_path, $edit, t('Save configuration'));
 
     // Visit the homepage and ensure color changes.
     $this->drupalLogout();
     $this->drupalGet('');
-    // Make sure the color logo is being used.
-    $this->assertRaw('files/color/bartik-');
-    // Make sure the original bartik logo does not exist.
-    $this->assertNoRaw('bartik/logo.svg');
+    $this->assertRaw('files/color/bartik-', 'Make sure the color logo is being used.');
+    $this->assertNoRaw('bartik/logo.svg', 'Make sure the original bartik logo does not exist.');
 
     // Log in and set the color scheme back to default (delete config).
     $this->drupalLogin($this->bigUser);
     $edit['scheme'] = 'default';
-    $this->drupalPostForm($settings_path, $edit, 'Save configuration');
+    $this->drupalPostForm($settings_path, $edit, t('Save configuration'));
 
     // Log out and ensure there is no color and we have the original logo.
     $this->drupalLogout();
     $this->drupalGet('');
-    // Make sure the color logo is not being used.
-    $this->assertNoRaw('files/color/bartik-');
-    // Make sure the original bartik logo exists.
-    $this->assertRaw('bartik/logo.svg');
+    $this->assertNoRaw('files/color/bartik-', 'Make sure the color logo is not being used.');
+    $this->assertRaw('bartik/logo.svg', 'Make sure the original bartik logo exists.');
   }
 
 }

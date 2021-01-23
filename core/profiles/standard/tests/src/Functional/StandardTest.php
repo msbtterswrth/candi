@@ -38,7 +38,7 @@ class StandardTest extends BrowserTestBase {
    */
   public function testStandard() {
     $this->drupalGet('');
-    $this->assertSession()->linkExists('Contact');
+    $this->assertSession()->linkExists(t('Contact'));
     $this->clickLink(t('Contact'));
     $this->assertSession()->statusCodeEquals(200);
 
@@ -53,10 +53,10 @@ class StandardTest extends BrowserTestBase {
     $this->drupalLogin($this->adminUser);
     // Configure the block.
     $this->drupalGet('admin/structure/block/add/system_menu_block:main/bartik');
-    $this->submitForm([
+    $this->drupalPostForm(NULL, [
       'region' => 'sidebar_first',
       'id' => 'main_navigation',
-    ], 'Save block');
+    ], t('Save block'));
     // Verify admin user can see the block.
     $this->drupalGet('');
     $this->assertText('Main navigation');
@@ -87,12 +87,11 @@ class StandardTest extends BrowserTestBase {
     // Add a comment.
     $this->drupalLogin($this->adminUser);
     $this->drupalGet('node/1');
-    // Verify that a line break is present.
-    $this->assertRaw('Then she picked out two somebodies,<br />Sally and me');
-    $this->submitForm([
+    $this->assertRaw('Then she picked out two somebodies,<br />Sally and me', 'Found a line break.');
+    $this->drupalPostForm(NULL, [
       'subject[0][value]' => 'Barfoo',
       'comment_body[0][value]' => 'Then she picked out two somebodies, Sally and me',
-    ], 'Save');
+    ], t('Save'));
     // Fetch the feed.
     $this->drupalGet('rss.xml');
     $this->assertText('Foobar');
@@ -100,7 +99,7 @@ class StandardTest extends BrowserTestBase {
 
     // Ensure block body exists.
     $this->drupalGet('block/add');
-    $this->assertSession()->fieldExists('body[0][value]');
+    $this->assertFieldByName('body[0][value]');
 
     // Now we have all configuration imported, test all of them for schema
     // conformance. Ensures all imported default configuration is valid when
@@ -181,27 +180,22 @@ class StandardTest extends BrowserTestBase {
     $this->drupalLogin($this->adminUser);
     $url = Url::fromRoute('contact.site_page');
     $this->drupalGet($url);
-    // Verify that site-wide contact page cannot be cached by Dynamic Page
-    // Cache.
-    $this->assertSession()->responseHeaderEquals(DynamicPageCacheSubscriber::HEADER, 'UNCACHEABLE');
+    $this->assertEqual('UNCACHEABLE', $this->drupalGetHeader(DynamicPageCacheSubscriber::HEADER), 'Site-wide contact page cannot be cached by Dynamic Page Cache.');
 
     $url = Url::fromRoute('<front>');
     $this->drupalGet($url);
     $this->drupalGet($url);
-    // Verify that frontpage is cached by Dynamic Page Cache.
-    $this->assertSession()->responseHeaderEquals(DynamicPageCacheSubscriber::HEADER, 'HIT');
+    $this->assertEqual('HIT', $this->drupalGetHeader(DynamicPageCacheSubscriber::HEADER), 'Frontpage is cached by Dynamic Page Cache.');
 
     $url = Url::fromRoute('entity.node.canonical', ['node' => 1]);
     $this->drupalGet($url);
     $this->drupalGet($url);
-    // Verify that full node page is cached by Dynamic Page Cache.
-    $this->assertSession()->responseHeaderEquals(DynamicPageCacheSubscriber::HEADER, 'HIT');
+    $this->assertEqual('HIT', $this->drupalGetHeader(DynamicPageCacheSubscriber::HEADER), 'Full node page is cached by Dynamic Page Cache.');
 
     $url = Url::fromRoute('entity.user.canonical', ['user' => 1]);
     $this->drupalGet($url);
     $this->drupalGet($url);
-    // Verify that user profile page is cached by Dynamic Page Cache.
-    $this->assertSession()->responseHeaderEquals(DynamicPageCacheSubscriber::HEADER, 'HIT');
+    $this->assertEqual('HIT', $this->drupalGetHeader(DynamicPageCacheSubscriber::HEADER), 'User profile page is cached by Dynamic Page Cache.');
 
     // Make sure the editorial workflow is installed after enabling the
     // content_moderation module.
@@ -251,11 +245,11 @@ class StandardTest extends BrowserTestBase {
       // The source field should be shown before the vertical tabs.
       $test_source_field = $assert_session->fieldExists($media_type->getSource()->getSourceFieldDefinition($media_type)->getLabel(), $form)->getOuterHtml();
       $vertical_tabs = $assert_session->elementExists('css', '.form-type-vertical-tabs', $form)->getOuterHtml();
-      $this->assertGreaterThan(strpos($form_html, $test_source_field), strpos($form_html, $vertical_tabs));
+      $this->assertTrue(strpos($form_html, $vertical_tabs) > strpos($form_html, $test_source_field));
       // The "Published" checkbox should be the last element.
       $date_field = $assert_session->fieldExists('Date', $form)->getOuterHtml();
       $published_checkbox = $assert_session->fieldExists('Published', $form)->getOuterHtml();
-      $this->assertGreaterThan(strpos($form_html, $date_field), strpos($form_html, $published_checkbox));
+      $this->assertTrue(strpos($form_html, $published_checkbox) > strpos($form_html, $date_field));
       if (is_a($media_type->getSource(), Image::class, TRUE)) {
         // Assert the default entity view display is configured with an image
         // style.

@@ -57,15 +57,12 @@ trait AssertMailTrait {
    *   this default.
    *
    * @return bool
-   *   TRUE on pass.
+   *   TRUE on pass, FALSE on fail.
    */
   protected function assertMail($name, $value = '', $message = '', $group = 'Email') {
     $captured_emails = $this->container->get('state')->get('system.test_mail_collector') ?: [];
     $email = end($captured_emails);
-    $this->assertIsArray($email, $message);
-    $this->assertArrayHasKey($name, $email, $message);
-    $this->assertEquals($value, $email[$name], $message);
-    return TRUE;
+    return $this->assertTrue($email && isset($email[$name]) && $email[$name] == $value, $message, $group);
   }
 
   /**
@@ -141,7 +138,7 @@ trait AssertMailTrait {
     if (!$message) {
       $message = new FormattableMarkup('Expected text found in @field of email message: "@expected".', ['@field' => $field_name, '@expected' => $regex]);
     }
-    return $this->assertTrue((bool) $regex_found, $message, $group);
+    return $this->assertTrue($regex_found, $message, $group);
   }
 
   /**

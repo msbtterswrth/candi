@@ -18,7 +18,7 @@ class MenuLinkContentDeleteFormTest extends BrowserTestBase {
    *
    * @var array
    */
-  protected static $modules = ['menu_link_content'];
+  public static $modules = ['menu_link_content'];
 
   /**
    * {@inheritdoc}
@@ -28,7 +28,7 @@ class MenuLinkContentDeleteFormTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp(): void {
+  protected function setUp() {
     parent::setUp();
     $web_user = $this->drupalCreateUser(['administer menu']);
     $this->drupalLogin($web_user);
@@ -45,24 +45,25 @@ class MenuLinkContentDeleteFormTest extends BrowserTestBase {
         'title[0][value]' => t('Front page'),
         'link[0][uri]' => '<front>',
       ],
-      'Save'
+      t('Save')
     );
-    $this->assertText('The menu link has been saved.');
+    $this->assertText(t('The menu link has been saved.'));
 
     $menu_link = MenuLinkContent::load(1);
     $this->drupalGet($menu_link->toUrl('delete-form'));
     $this->assertRaw(t('Are you sure you want to delete the custom menu link %name?', ['%name' => $menu_link->label()]));
-    $this->assertSession()->linkExists('Cancel');
+    $this->assertSession()->linkExists(t('Cancel'));
     // Make sure cancel link points to link edit
-    $this->assertSession()->linkByHrefExists($menu_link->toUrl('edit-form')->toString());
+    $this->assertLinkByHref($menu_link->toUrl('edit-form')->toString());
 
     \Drupal::service('module_installer')->install(['menu_ui']);
+    \Drupal::service('router.builder')->rebuild();
 
     // Make sure cancel URL points to menu_ui route now.
     $this->drupalGet($menu_link->toUrl('delete-form'));
     $menu = Menu::load($menu_link->getMenuName());
-    $this->assertSession()->linkByHrefExists($menu->toUrl('edit-form')->toString());
-    $this->submitForm([], 'Delete');
+    $this->assertLinkByHref($menu->toUrl('edit-form')->toString());
+    $this->drupalPostForm(NULL, [], t('Delete'));
     $this->assertRaw(t('The menu link %title has been deleted.', ['%title' => $menu_link->label()]));
   }
 

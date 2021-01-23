@@ -177,7 +177,7 @@ trait UserCreationTrait {
     }
     $edit += [
       'mail' => $edit['name'] . '@example.com',
-      'pass' => \Drupal::service('password_generator')->generate(),
+      'pass' => user_password(),
       'status' => 1,
     ];
     if ($rid) {
@@ -283,7 +283,12 @@ trait UserCreationTrait {
         $this->grantPermissions($role, $permissions);
         $assigned_permissions = Role::load($role->id())->getPermissions();
         $missing_permissions = array_diff($permissions, $assigned_permissions);
-        $this->assertEmpty($missing_permissions);
+        if (!$missing_permissions) {
+          $this->pass(new FormattableMarkup('Created permissions: @perms', ['@perms' => implode(', ', $permissions)]), 'Role');
+        }
+        else {
+          $this->fail(new FormattableMarkup('Failed to create permissions: @perms', ['@perms' => implode(', ', $missing_permissions)]), 'Role');
+        }
       }
       return $role->id();
     }

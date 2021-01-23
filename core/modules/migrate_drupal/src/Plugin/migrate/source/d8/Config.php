@@ -35,7 +35,6 @@ class Config extends DrupalSqlBase {
    */
   public function prepareRow(Row $row) {
     $row->setSourceProperty('data', unserialize($row->getSourceProperty('data')));
-    return parent::prepareRow($row);
   }
 
   /**

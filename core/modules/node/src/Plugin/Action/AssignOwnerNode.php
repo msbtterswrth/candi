@@ -99,7 +99,7 @@ class AssignOwnerNode extends ConfigurableActionBase implements ContainerFactory
         '#type' => 'entity_autocomplete',
         '#title' => t('Username'),
         '#target_type' => 'user',
-        '#selection_settings' => [
+        '#selection_setttings' => [
           'include_anonymous' => FALSE,
         ],
         '#default_value' => User::load($this->configuration['owner_uid']),

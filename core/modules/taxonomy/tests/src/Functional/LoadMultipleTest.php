@@ -17,7 +17,7 @@ class LoadMultipleTest extends TaxonomyTestBase {
    */
   protected $defaultTheme = 'stark';
 
-  protected function setUp(): void {
+  protected function setUp() {
     parent::setUp();
     $this->drupalLogin($this->drupalCreateUser(['administer taxonomy']));
   }
@@ -44,7 +44,8 @@ class LoadMultipleTest extends TaxonomyTestBase {
 
     // Load the same terms again by tid.
     $terms2 = Term::loadMultiple(array_keys($terms));
-    $this->assertEquals($terms, $terms2, 'Both arrays contain the same terms.');
+    $this->assertEqual($count, count($terms2), 'Five terms were loaded by tid.');
+    $this->assertEqual($terms, $terms2, 'Both arrays contain the same terms.');
 
     // Remove one term from the array, then delete it.
     $deleted = array_shift($terms2);

@@ -28,7 +28,7 @@ class TextFormatElementFormTest extends KernelTestBase implements FormInterface 
    *
    * @var array
    */
-  protected static $modules = [
+  public static $modules = [
     'system',
     'user',
     'filter',
@@ -39,25 +39,19 @@ class TextFormatElementFormTest extends KernelTestBase implements FormInterface 
   /**
    * Sets up the test.
    */
-  protected function setUp(): void {
+  protected function setUp() {
     parent::setUp();
     $this->installEntitySchema('user');
     $this->installSchema('system', ['sequences']);
     $this->installConfig(['filter', 'filter_test']);
-
-    // Create user 1 so that the user created later in the test has a different
-    // user ID.
-    // @todo Remove in https://www.drupal.org/node/540008.
-    User::create(['uid' => 1, 'name' => 'user1'])->save();
-
+    // Filter tips link to the full-page.
+    \Drupal::service('router.builder')->rebuild();
     /* @var \Drupal\Core\Render\ElementInfoManager $manager */
     $manager = \Drupal::service('plugin.manager.element_info');
     $manager->clearCachedDefinitions();
     $manager->getDefinitions();
     /* @var \Drupal\filter\FilterFormatInterface $filter_test_format */
     $filter_test_format = FilterFormat::load('filter_test');
-    $full_html_format = FilterFormat::load('full_html');
-    $filtered_html_format = FilterFormat::load('filtered_html');
 
     /* @var \Drupal\user\RoleInterface $role */
     $role = Role::create([
@@ -65,8 +59,6 @@ class TextFormatElementFormTest extends KernelTestBase implements FormInterface 
       'label' => 'admin',
     ]);
     $role->grantPermission($filter_test_format->getPermissionName());
-    $role->grantPermission($full_html_format->getPermissionName());
-    $role->grantPermission($filtered_html_format->getPermissionName());
     $role->save();
     $this->testUser = User::create([
       'name' => 'foobar',

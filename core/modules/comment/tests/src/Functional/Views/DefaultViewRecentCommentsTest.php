@@ -23,7 +23,7 @@ class DefaultViewRecentCommentsTest extends ViewTestBase {
    *
    * @var array
    */
-  protected static $modules = ['node', 'comment', 'block'];
+  public static $modules = ['node', 'comment', 'block'];
 
   /**
    * {@inheritdoc}
@@ -65,7 +65,7 @@ class DefaultViewRecentCommentsTest extends ViewTestBase {
    */
   public $node;
 
-  protected function setUp($import_test_views = TRUE): void {
+  protected function setUp($import_test_views = TRUE) {
     parent::setUp($import_test_views);
 
     // Create a new content type
@@ -136,7 +136,7 @@ class DefaultViewRecentCommentsTest extends ViewTestBase {
     $this->assertIdenticalResultset($view, $expected_result, $map);
 
     // Check the number of results given by the display is the expected.
-    $this->assertCount($this->blockDisplayResults, $view->result,
+    $this->assertEqual(count($view->result), $this->blockDisplayResults,
       new FormattableMarkup('There are exactly @results comments. Expected @expected',
         ['@results' => count($view->result), '@expected' => $this->blockDisplayResults]
       )

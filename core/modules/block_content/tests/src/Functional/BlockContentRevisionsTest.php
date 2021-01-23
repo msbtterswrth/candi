@@ -4,6 +4,7 @@ namespace Drupal\Tests\block_content\Functional;
 
 use Drupal\Component\Render\FormattableMarkup;
 use Drupal\block_content\Entity\BlockContent;
+use Drupal\user\Entity\User;
 use Drupal\user\UserInterface;
 
 /**
@@ -33,8 +34,11 @@ class BlockContentRevisionsTest extends BlockContentTestBase {
   /**
    * Sets the test up.
    */
-  protected function setUp(): void {
+  protected function setUp() {
     parent::setUp();
+
+    /** @var \Drupal\user\Entity\UserInterface $user */
+    $user = User::load(1);
 
     // Create initial block.
     $block = $this->createBlockContent('initial');
@@ -103,8 +107,7 @@ class BlockContentRevisionsTest extends BlockContentTestBase {
     // Verify that the non-default revision id is greater than the default
     // revision id.
     $default_revision = BlockContent::load($loaded->id());
-    // Verify that the revision ID is greater than the default revision ID.
-    $this->assertGreaterThan($default_revision->getRevisionId(), $loaded->getRevisionId());
+    $this->assertTrue($loaded->getRevisionId() > $default_revision->getRevisionId(), 'Revision id is greater than default revision id.');
   }
 
 }

@@ -22,7 +22,7 @@ class DisplayFeedTest extends UITestBase {
    *
    * @var array
    */
-  protected static $modules = ['views_ui', 'aggregator'];
+  public static $modules = ['views_ui', 'aggregator'];
 
   /**
    * {@inheritdoc}
@@ -56,7 +56,7 @@ class DisplayFeedTest extends UITestBase {
     // Check the attach TO interface.
     $this->drupalGet('admin/structure/views/nojs/display/' . $view_name . '/feed_1/displays');
     // Display labels should be escaped.
-    $this->assertSession()->assertEscaped('<em>Page</em>');
+    $this->assertEscaped('<em>Page</em>');
 
     // Load all the options of the checkbox.
     $result = $this->xpath('//div[@id="edit-displays"]/div');
@@ -71,18 +71,18 @@ class DisplayFeedTest extends UITestBase {
     $this->assertEqual($options, ['default', 'page'], 'Make sure all displays appears as expected.');
 
     // Post and save this and check the output.
-    $this->drupalPostForm('admin/structure/views/nojs/display/' . $view_name . '/feed_1/displays', ['displays[page]' => 'page'], 'Apply');
+    $this->drupalPostForm('admin/structure/views/nojs/display/' . $view_name . '/feed_1/displays', ['displays[page]' => 'page'], t('Apply'));
     // Options summary should be escaped.
-    $this->assertSession()->assertEscaped('<em>Page</em>');
+    $this->assertEscaped('<em>Page</em>');
     $this->assertNoRaw('<em>Page</em>');
 
     $this->drupalGet('admin/structure/views/view/' . $view_name . '/edit/feed_1');
-    $this->assertSession()->elementTextContains('xpath', '//*[@id="views-feed-1-displays"]', 'Page');
+    $this->assertFieldByXpath('//*[@id="views-feed-1-displays"]', '<em>Page</em>');
 
     // Add the default display, so there should now be multiple displays.
-    $this->drupalPostForm('admin/structure/views/nojs/display/' . $view_name . '/feed_1/displays', ['displays[default]' => 'default'], 'Apply');
+    $this->drupalPostForm('admin/structure/views/nojs/display/' . $view_name . '/feed_1/displays', ['displays[default]' => 'default'], t('Apply'));
     $this->drupalGet('admin/structure/views/view/' . $view_name . '/edit/feed_1');
-    $this->assertSession()->elementTextContains('xpath', '//*[@id="views-feed-1-displays"]', 'Multiple displays');
+    $this->assertFieldByXpath('//*[@id="views-feed-1-displays"]', 'Multiple displays');
   }
 
 }

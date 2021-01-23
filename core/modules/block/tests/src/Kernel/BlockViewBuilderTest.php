@@ -20,7 +20,7 @@ class BlockViewBuilderTest extends KernelTestBase {
    *
    * @var array
    */
-  protected static $modules = ['block', 'block_test', 'system', 'user'];
+  public static $modules = ['block', 'block_test', 'system', 'user'];
 
   /**
    * The block being tested.
@@ -46,7 +46,7 @@ class BlockViewBuilderTest extends KernelTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp(): void {
+  protected function setUp() {
     parent::setUp();
 
     $this->controller = $this->container
@@ -207,9 +207,7 @@ class BlockViewBuilderTest extends KernelTestBase {
     $build = $this->getBlockRenderArray();
     $this->assertFalse(isset($build['#prefix']), 'The appended #pre_render callback has not yet run before rendering.');
     $this->assertIdentical((string) $this->renderer->renderRoot($build), 'Hiya!<br>');
-    // Check that a cached block without content is altered.
-    $this->assertArrayHasKey('#prefix', $build);
-    $this->assertSame('Hiya!<br>', $build['#prefix']);
+    $this->assertTrue(isset($build['#prefix']) && $build['#prefix'] === 'Hiya!<br>', 'A cached block without content is altered.');
   }
 
   /**

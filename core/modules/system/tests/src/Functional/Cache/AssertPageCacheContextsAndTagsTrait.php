@@ -79,7 +79,7 @@ trait AssertPageCacheContextsAndTagsTrait {
 
     // Assert cache miss + expected cache contexts + tags.
     $this->drupalGet($absolute_url);
-    $this->assertSession()->responseHeaderEquals('X-Drupal-Cache', 'MISS');
+    $this->assertEqual($this->drupalGetHeader('X-Drupal-Cache'), 'MISS');
     $this->assertCacheTags($expected_tags);
     $this->assertCacheContexts($expected_contexts);
 
@@ -156,7 +156,8 @@ trait AssertPageCacheContextsAndTagsTrait {
    * @param int $max_age
    */
   protected function assertCacheMaxAge($max_age) {
-    $this->assertSession()->responseHeaderContains('Cache-Control', 'max-age:' . $max_age);
+    $cache_control_header = $this->drupalGetHeader('Cache-Control');
+    $this->assertStringContainsString('max-age:' . $max_age, $cache_control_header);
   }
 
 }

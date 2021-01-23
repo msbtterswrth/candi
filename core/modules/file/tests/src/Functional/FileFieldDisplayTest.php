@@ -54,7 +54,7 @@ class FileFieldDisplayTest extends FileFieldTestBase {
           "fields[$field_name][region]" => 'content',
         ];
       }
-      $this->drupalPostForm("admin/structure/types/manage/$type_name/display", $edit, 'Save');
+      $this->drupalPostForm("admin/structure/types/manage/$type_name/display", $edit, t('Save'));
       $this->drupalGet('node/' . $node->id());
       $this->assertNoText($field_name, new FormattableMarkup('Field label is hidden when no file attached for formatter %formatter', ['%formatter' => $formatter]));
     }
@@ -79,13 +79,13 @@ class FileFieldDisplayTest extends FileFieldTestBase {
       '#file' => $node_file,
     ];
     $default_output = \Drupal::service('renderer')->renderRoot($file_link);
-    $this->assertRaw($default_output);
+    $this->assertRaw($default_output, 'Default formatter displaying correctly on full node view.');
 
     // Turn the "display" option off and check that the file is no longer displayed.
     $edit = [$field_name . '[0][display]' => FALSE];
-    $this->drupalPostForm('node/' . $nid . '/edit', $edit, 'Save');
+    $this->drupalPostForm('node/' . $nid . '/edit', $edit, t('Save'));
 
-    $this->assertNoRaw($default_output);
+    $this->assertNoRaw($default_output, 'Field is hidden when "display" option is unchecked.');
 
     // Add a description and make sure that it is displayed.
     $description = $this->randomMachineName();
@@ -93,7 +93,7 @@ class FileFieldDisplayTest extends FileFieldTestBase {
       $field_name . '[0][description]' => $description,
       $field_name . '[0][display]' => TRUE,
     ];
-    $this->drupalPostForm('node/' . $nid . '/edit', $edit, 'Save');
+    $this->drupalPostForm('node/' . $nid . '/edit', $edit, t('Save'));
     $this->assertText($description);
 
     // Ensure the filename in the link's title attribute is escaped.
@@ -103,21 +103,19 @@ class FileFieldDisplayTest extends FileFieldTestBase {
     // Add a second file.
     $name = 'files[' . $field_name . '_1][]';
     $edit_upload[$name] = \Drupal::service('file_system')->realpath($test_file->getFileUri());
-    $this->drupalPostForm("node/$nid/edit", $edit_upload, 'Upload');
+    $this->drupalPostForm("node/$nid/edit", $edit_upload, t('Upload'));
 
     // Uncheck the display checkboxes and go to the preview.
     $edit[$field_name . '[0][display]'] = FALSE;
     $edit[$field_name . '[1][display]'] = FALSE;
-    $this->submitForm($edit, 'Preview');
+    $this->drupalPostForm(NULL, $edit, t('Preview'));
     $this->clickLink(t('Back to content editing'));
-    // First file.
-    $this->assertRaw($field_name . '[0][display]');
-    // Second file.
-    $this->assertRaw($field_name . '[1][display]');
-    $this->assertSession()->responseContains($field_name . '[1][description]');
+    $this->assertRaw($field_name . '[0][display]', 'First file appears as expected.');
+    $this->assertRaw($field_name . '[1][display]', 'Second file appears as expected.');
+    $this->assertSession()->responseContains($field_name . '[1][description]', 'Description of second file appears as expected.');
 
     // Check that the file fields don't contain duplicate HTML IDs.
-    $this->assertSession()->pageContainsNoDuplicateId();
+    $this->assertNoDuplicateIds();
   }
 
   /**
@@ -143,8 +141,8 @@ class FileFieldDisplayTest extends FileFieldTestBase {
     $nid = $this->uploadNodeFile($test_file, $field_name, $type_name);
 
     $this->drupalGet('node/' . $nid . '/edit');
-    $this->assertSession()->fieldExists($field_name . '[0][display]');
-    $this->assertSession()->checkboxNotChecked($field_name . '[0][display]');
+    $this->assertFieldByXPath('//input[@type="checkbox" and @name="' . $field_name . '[0][display]"]', NULL, 'Default file display checkbox field exists.');
+    $this->assertFieldByXPath('//input[@type="checkbox" and @name="' . $field_name . '[0][display]" and not(@checked)]', NULL, 'Default file display is off.');
   }
 
   /**
@@ -159,20 +157,20 @@ class FileFieldDisplayTest extends FileFieldTestBase {
       'name' => $type_name,
       'type' => $type_name,
     ];
-    $this->drupalPostForm('admin/structure/types/add', $edit, 'Save and manage fields');
+    $this->drupalPostForm('admin/structure/types/add', $edit, t('Save and manage fields'));
     $edit = [
       'new_storage_type' => $field_type,
       'field_name' => $field_name,
       'label' => $this->randomString(),
     ];
-    $this->drupalPostForm('/admin/structure/types/manage/' . $type_name . '/fields/add-field', $edit, 'Save and continue');
-    $this->submitForm([], 'Save field settings');
+    $this->drupalPostForm('/admin/structure/types/manage/' . $type_name . '/fields/add-field', $edit, t('Save and continue'));
+    $this->drupalPostForm(NULL, [], t('Save field settings'));
     // Ensure the description field is selected on the field instance settings
     // form. That's what this test is all about.
     $edit = [
       'settings[description_field]' => TRUE,
     ];
-    $this->submitForm($edit, 'Save settings');
+    $this->drupalPostForm(NULL, $edit, t('Save settings'));
     // Add a node of our new type and upload a file to it.
     $file = current($this->drupalGetTestFiles('text'));
     $title = $this->randomString();
@@ -180,10 +178,10 @@ class FileFieldDisplayTest extends FileFieldTestBase {
       'title[0][value]' => $title,
       'files[field_' . $field_name . '_0]' => \Drupal::service('file_system')->realpath($file->uri),
     ];
-    $this->drupalPostForm('node/add/' . $type_name, $edit, 'Save');
+    $this->drupalPostForm('node/add/' . $type_name, $edit, t('Save'));
     $node = $this->drupalGetNodeByTitle($title);
     $this->drupalGet('node/' . $node->id() . '/edit');
-    $this->assertText('The description may be used as the label of the link to the file.');
+    $this->assertText(t('The description may be used as the label of the link to the file.'));
   }
 
   /**
@@ -210,7 +208,7 @@ class FileFieldDisplayTest extends FileFieldTestBase {
 
     // Add file description.
     $description = 'This is the test file description';
-    $this->drupalPostForm("node/$nid/edit", [$field_name . '[0][description]' => $description], 'Save');
+    $this->drupalPostForm("node/$nid/edit", [$field_name . '[0][description]' => $description], t('Save'));
 
     // Load uncached node.
     \Drupal::entityTypeManager()->getStorage('node')->resetCache([$nid]);
@@ -218,7 +216,7 @@ class FileFieldDisplayTest extends FileFieldTestBase {
 
     // Test default formatter.
     $this->drupalGet('node/' . $nid);
-    $this->assertSession()->elementTextContains('xpath', '//a[@href="' . $node->{$field_name}->entity->createFileUrl(FALSE) . '"]', $description);
+    $this->assertFieldByXPath('//a[@href="' . $node->{$field_name}->entity->createFileUrl(FALSE) . '"]', $description);
 
     // Change formatter to "Table of files".
     $display = \Drupal::entityTypeManager()->getStorage('entity_view_display')->load('node.' . $type_name . '.default');
@@ -228,7 +226,35 @@ class FileFieldDisplayTest extends FileFieldTestBase {
     ])->save();
 
     $this->drupalGet('node/' . $nid);
-    $this->assertSession()->elementTextContains('xpath', '//a[@href="' . $node->{$field_name}->entity->createFileUrl(FALSE) . '"]', $description);
+    $this->assertFieldByXPath('//a[@href="' . $node->{$field_name}->entity->createFileUrl(FALSE) . '"]', $description);
+  }
+
+  /**
+   * Asserts that each HTML ID is used for just a single element on the page.
+   *
+   * @param string $message
+   *   (optional) A message to display with the assertion.
+   */
+  protected function assertNoDuplicateIds($message = '') {
+    $args = ['@url' => $this->getUrl()];
+
+    if (!$elements = $this->xpath('//*[@id]')) {
+      $this->fail(new FormattableMarkup('The page @url contains no HTML IDs.', $args));
+      return;
+    }
+
+    $message = $message ?: new FormattableMarkup('The page @url does not contain duplicate HTML IDs', $args);
+
+    $seen_ids = [];
+    foreach ($elements as $element) {
+      $id = $element->getAttribute('id');
+      if (isset($seen_ids[$id])) {
+        $this->fail($message);
+        return;
+      }
+      $seen_ids[$id] = TRUE;
+    }
+    $this->assertTrue(TRUE, $message);
   }
 
 }

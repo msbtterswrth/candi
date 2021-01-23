@@ -107,7 +107,7 @@ class EntityReferenceFieldTranslatedReferenceViewTest extends BrowserTestBase {
   protected $translatedLabel;
 
   /**
-   * A user with permission to edit the referrer entity.
+   * An user with permission to edit the referrer entity.
    *
    * @var \Drupal\user\UserInterface
    */
@@ -118,7 +118,7 @@ class EntityReferenceFieldTranslatedReferenceViewTest extends BrowserTestBase {
    *
    * @var array
    */
-  protected static $modules = [
+  public static $modules = [
     'language',
     'content_translation',
     'node',
@@ -129,7 +129,7 @@ class EntityReferenceFieldTranslatedReferenceViewTest extends BrowserTestBase {
    */
   protected $defaultTheme = 'stark';
 
-  protected function setUp(): void {
+  protected function setUp() {
     parent::setUp();
 
     $this->labelOfNotTranslatedReference = $this->randomMachineName();
@@ -163,7 +163,7 @@ class EntityReferenceFieldTranslatedReferenceViewTest extends BrowserTestBase {
 
     // Disable translation for referrer content type.
     $this->drupalLogin($this->rootUser);
-    $this->drupalPostForm('admin/config/regional/content-language', ['settings[node][referrer][translatable]' => FALSE], 'Save configuration');
+    $this->drupalPostForm('admin/config/regional/content-language', ['settings[node][referrer][translatable]' => FALSE], t('Save configuration'));
     $this->drupalLogout();
 
     // Create a referrer entity without translation.
@@ -229,6 +229,8 @@ class EntityReferenceFieldTranslatedReferenceViewTest extends BrowserTestBase {
     // up.
     \Drupal::service('content_translation.manager')->setEnabled($this->testEntityTypeName, $this->referrerType->id(), TRUE);
     \Drupal::service('content_translation.manager')->setEnabled($this->testEntityTypeName, $this->referencedType->id(), TRUE);
+
+    \Drupal::service('router.builder')->rebuild();
   }
 
   /**

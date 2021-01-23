@@ -22,12 +22,12 @@ class UserValidationTest extends KernelTestBase {
    *
    * @var array
    */
-  protected static $modules = ['field', 'user', 'system'];
+  public static $modules = ['field', 'user', 'system'];
 
   /**
    * {@inheritdoc}
    */
-  protected function setUp(): void {
+  protected function setUp() {
     parent::setUp();
     $this->installEntitySchema('user');
     $this->installSchema('system', ['sequences']);
@@ -41,7 +41,6 @@ class UserValidationTest extends KernelTestBase {
    * Tests user name validation.
    */
   public function testUsernames() {
-    // cSpell:disable
     $test_cases = [
       // '<username>' => ['<description>', 'assert<testName>'].
       'foo'                    => ['Valid username', 'assertNull'],
@@ -67,7 +66,6 @@ class UserValidationTest extends KernelTestBase {
       'foo' . chr(13) . 'bar'  => ['Invalid username containing chr(13)', 'assertNotNull'],
       str_repeat('x', UserInterface::USERNAME_MAX_LENGTH + 1) => ['Invalid excessively long username', 'assertNotNull'],
     ];
-    // cSpell:enable
     foreach ($test_cases as $name => $test_case) {
       list($description, $test) = $test_case;
       $result = user_validate_name($name);
@@ -201,14 +199,14 @@ class UserValidationTest extends KernelTestBase {
    */
   protected function assertLengthViolation(EntityInterface $entity, $field_name, $length, $count = 1, $expected_index = 0) {
     $violations = $entity->validate();
-    $this->assertCount($count, $violations, "Violation found when $field_name is too long.");
+    $this->assertEqual(count($violations), $count, "Violation found when $field_name is too long.");
     $this->assertEqual($violations[$expected_index]->getPropertyPath(), "$field_name.0.value");
     $field_label = $entity->get($field_name)->getFieldDefinition()->getLabel();
     $this->assertEqual($violations[$expected_index]->getMessage(), t('%name: may not be longer than @max characters.', ['%name' => $field_label, '@max' => $length]));
   }
 
   /**
-   * Verifies that an AllowedValues violation exists for the given field.
+   * Verifies that a AllowedValues violation exists for the given field.
    *
    * @param \Drupal\Core\Entity\EntityInterface $entity
    *   The entity object to validate.

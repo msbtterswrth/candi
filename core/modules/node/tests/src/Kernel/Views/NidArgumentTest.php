@@ -18,7 +18,7 @@ class NidArgumentTest extends ViewsKernelTestBase {
   /**
    * {@inheritdoc}
    */
-  protected static $modules = [
+  public static $modules = [
     'node',
     'field',
     'text',
@@ -37,14 +37,14 @@ class NidArgumentTest extends ViewsKernelTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp($import_test_views = TRUE): void {
+  protected function setUp($import_test_views = TRUE) {
     parent::setUp($import_test_views);
 
     $this->installEntitySchema('node');
     $this->installEntitySchema('user');
     $this->installConfig(['node', 'field']);
 
-    ViewTestData::createTestViews(static::class, ['node_test_views']);
+    ViewTestData::createTestViews(get_class($this), ['node_test_views']);
   }
 
   /**
@@ -68,7 +68,7 @@ class NidArgumentTest extends ViewsKernelTestBase {
     $view->preview();
     $this->assertCount(2, $view->result, 'Found the expected number of results.');
 
-    // Set the second node id as an argument.
+    // Set an the second node id as an argument.
     $view->destroy();
     $view->preview('default', [$node2->id()]);
     // Verify that the title is overridden.

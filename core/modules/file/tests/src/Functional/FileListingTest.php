@@ -18,7 +18,7 @@ class FileListingTest extends FileFieldTestBase {
    *
    * @var array
    */
-  protected static $modules = ['views', 'file', 'image', 'entity_test'];
+  public static $modules = ['views', 'file', 'image', 'entity_test'];
 
   /**
    * {@inheritdoc}
@@ -32,7 +32,7 @@ class FileListingTest extends FileFieldTestBase {
    */
   protected $baseUser;
 
-  protected function setUp(): void {
+  protected function setUp() {
     parent::setUp();
 
     // This test expects unused managed files to be marked as a temporary file.
@@ -98,7 +98,7 @@ class FileListingTest extends FileFieldTestBase {
 
     $this->drupalGet('admin/content/files/usage/' . $file->id());
     $this->assertSession()->statusCodeEquals(200);
-    $this->assertSession()->titleEquals('File usage information for ' . $file->getFilename() . ' | Drupal');
+    $this->assertTitle('File usage information for ' . $file->getFilename() . ' | Drupal');
 
     foreach ($nodes as &$node) {
       $this->drupalGet('node/' . $node->id() . '/edit');
@@ -107,7 +107,7 @@ class FileListingTest extends FileFieldTestBase {
       $edit = [
         'files[file_0]' => \Drupal::service('file_system')->realpath($file->getFileUri()),
       ];
-      $this->submitForm($edit, 'Save');
+      $this->drupalPostForm(NULL, $edit, t('Save'));
       $node = Node::load($node->id());
     }
 
@@ -116,8 +116,8 @@ class FileListingTest extends FileFieldTestBase {
     foreach ($nodes as $node) {
       $file = File::load($node->file->target_id);
       $this->assertText($file->getFilename());
-      $this->assertSession()->linkByHrefExists(file_create_url($file->getFileUri()));
-      $this->assertSession()->linkByHrefExists('admin/content/files/usage/' . $file->id());
+      $this->assertLinkByHref(file_create_url($file->getFileUri()));
+      $this->assertLinkByHref('admin/content/files/usage/' . $file->id());
     }
     $this->assertSession()->elementTextNotContains('css', 'table.views-table', 'Temporary');
     $this->assertSession()->elementTextContains('css', 'table.views-table', 'Permanent');
@@ -156,7 +156,7 @@ class FileListingTest extends FileFieldTestBase {
           }
         }
       }
-      $this->assertSession()->linkByHrefExists('node/' . $node->id(), 0, 'Link to registering entity found on usage page.');
+      $this->assertLinkByHref('node/' . $node->id(), 0, 'Link to registering entity found on usage page.');
     }
   }
 

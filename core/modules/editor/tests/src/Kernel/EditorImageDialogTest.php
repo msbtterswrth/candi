@@ -28,7 +28,7 @@ class EditorImageDialogTest extends EntityKernelTestBase {
    *
    * @var array
    */
-  protected static $modules = [
+  public static $modules = [
     'node',
     'file',
     'editor',
@@ -40,9 +40,10 @@ class EditorImageDialogTest extends EntityKernelTestBase {
   /**
    * Sets up the test.
    */
-  protected function setUp(): void {
+  protected function setUp() {
     parent::setUp();
     $this->installEntitySchema('file');
+    $this->installSchema('system', ['key_value_expire']);
     $this->installSchema('node', ['node_access']);
     $this->installSchema('file', ['file_usage']);
     $this->installConfig(['node']);
@@ -78,6 +79,7 @@ class EditorImageDialogTest extends EntityKernelTestBase {
     $type->save();
     node_add_body_field($type);
     $this->installEntitySchema('user');
+    \Drupal::service('router.builder')->rebuild();
   }
 
   /**

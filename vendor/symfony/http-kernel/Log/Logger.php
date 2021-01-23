@@ -37,7 +37,7 @@ class Logger extends AbstractLogger
     private $formatter;
     private $handle;
 
-    public function __construct(string $minLevel = null, $output = null, callable $formatter = null)
+    public function __construct($minLevel = null, $output = null, callable $formatter = null)
     {
         if (null === $minLevel) {
             $minLevel = null === $output || 'php://stdout' === $output || 'php://stderr' === $output ? LogLevel::ERROR : LogLevel::WARNING;
@@ -65,8 +65,6 @@ class Logger extends AbstractLogger
 
     /**
      * {@inheritdoc}
-     *
-     * @return void
      */
     public function log($level, $message, array $context = [])
     {
@@ -86,7 +84,13 @@ class Logger extends AbstractLogger
         }
     }
 
-    private function format(string $level, string $message, array $context, bool $prefixDate = true): string
+    /**
+     * @param string $level
+     * @param string $message
+     *
+     * @return string
+     */
+    private function format($level, $message, array $context, $prefixDate = true)
     {
         if (false !== strpos($message, '{')) {
             $replacements = [];
@@ -105,7 +109,7 @@ class Logger extends AbstractLogger
             $message = strtr($message, $replacements);
         }
 
-        $log = sprintf('[%s] %s', $level, $message).\PHP_EOL;
+        $log = sprintf('[%s] %s', $level, $message).PHP_EOL;
         if ($prefixDate) {
             $log = date(\DateTime::RFC3339).' '.$log;
         }

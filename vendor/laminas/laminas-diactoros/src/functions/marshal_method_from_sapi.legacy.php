@@ -6,8 +6,6 @@
  * @license   https://github.com/laminas/laminas-diactoros/blob/master/LICENSE.md New BSD License
  */
 
-declare(strict_types=1);
-
 namespace Zend\Diactoros;
 
 use function Laminas\Diactoros\marshalMethodFromSapi as laminas_marshalMethodFromSapi;
@@ -15,7 +13,7 @@ use function Laminas\Diactoros\marshalMethodFromSapi as laminas_marshalMethodFro
 /**
  * @deprecated Use Laminas\Diactoros\marshalMethodFromSapi instead
  */
-function marshalMethodFromSapi(array $server) : string
+function marshalMethodFromSapi(array $server)
 {
     return laminas_marshalMethodFromSapi(...func_get_args());
 }

@@ -35,9 +35,7 @@ class TermTranslation extends Term {
    * {@inheritdoc}
    */
   public function prepareRow(Row $row) {
-    if (!parent::prepareRow($row)) {
-      return FALSE;
-    }
+    parent::prepareRow($row);
     $row->setSourceProperty('language', $row->getSourceProperty('td_language'));
   }
 

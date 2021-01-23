@@ -20,7 +20,7 @@ class StatisticsAdminTest extends BrowserTestBase {
    *
    * @var array
    */
-  protected static $modules = ['node', 'statistics'];
+  public static $modules = ['node', 'statistics'];
 
   /**
    * {@inheritdoc}
@@ -48,7 +48,7 @@ class StatisticsAdminTest extends BrowserTestBase {
    */
   protected $client;
 
-  protected function setUp(): void {
+  protected function setUp() {
     parent::setUp();
 
     // Set the max age to 0 to simplify testing.
@@ -77,7 +77,7 @@ class StatisticsAdminTest extends BrowserTestBase {
 
     // Enable counter on content view.
     $edit['statistics_count_content_views'] = 1;
-    $this->drupalPostForm('admin/config/system/statistics', $edit, 'Save configuration');
+    $this->drupalPostForm('admin/config/system/statistics', $edit, t('Save configuration'));
     $config = $this->config('statistics.settings');
     $this->assertNotEmpty($config->get('count_content_views'), 'Count content view log is enabled.');
 

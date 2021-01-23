@@ -18,7 +18,7 @@ class TermIndexTest extends TaxonomyTestBase {
    *
    * @var array
    */
-  protected static $modules = ['views'];
+  public static $modules = ['views'];
 
   /**
    * {@inheritdoc}
@@ -46,7 +46,7 @@ class TermIndexTest extends TaxonomyTestBase {
    */
   protected $fieldName2;
 
-  protected function setUp(): void {
+  protected function setUp() {
     parent::setUp();
 
     // Create an administrative user.
@@ -112,7 +112,7 @@ class TermIndexTest extends TaxonomyTestBase {
     $edit['body[0][value]'] = $this->randomMachineName();
     $edit["{$this->fieldName1}[]"] = $term_1->id();
     $edit["{$this->fieldName2}[]"] = $term_1->id();
-    $this->drupalPostForm('node/add/article', $edit, 'Save');
+    $this->drupalPostForm('node/add/article', $edit, t('Save'));
 
     // Check that the term is indexed, and only once.
     $node = $this->drupalGetNodeByTitle($edit['title[0][value]']);
@@ -127,7 +127,7 @@ class TermIndexTest extends TaxonomyTestBase {
 
     // Update the article to change one term.
     $edit["{$this->fieldName1}[]"] = $term_2->id();
-    $this->drupalPostForm('node/' . $node->id() . '/edit', $edit, 'Save');
+    $this->drupalPostForm('node/' . $node->id() . '/edit', $edit, t('Save'));
 
     // Check that both terms are indexed.
     $index_count = $connection->select('taxonomy_index')
@@ -147,7 +147,7 @@ class TermIndexTest extends TaxonomyTestBase {
 
     // Update the article to change another term.
     $edit["{$this->fieldName2}[]"] = $term_2->id();
-    $this->drupalPostForm('node/' . $node->id() . '/edit', $edit, 'Save');
+    $this->drupalPostForm('node/' . $node->id() . '/edit', $edit, t('Save'));
 
     // Check that only one term is indexed.
     $index_count = $connection->select('taxonomy_index')
@@ -244,8 +244,7 @@ class TermIndexTest extends TaxonomyTestBase {
     $this->drupalGet('taxonomy/term/' . $term1->id());
     // Breadcrumbs are not rendered with a language, prevent the term
     // language from being added to the options.
-    // Check that parent term link is displayed when viewing the node.
-    $this->assertRaw(Link::fromTextAndUrl($term2->getName(), $term2->toUrl('canonical', ['language' => NULL]))->toString());
+    $this->assertRaw(Link::fromTextAndUrl($term2->getName(), $term2->toUrl('canonical', ['language' => NULL]))->toString(), 'Parent term link is displayed when viewing the node.');
   }
 
 }

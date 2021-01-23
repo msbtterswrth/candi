@@ -23,7 +23,7 @@ class ToolbarMenuTranslationTest extends BrowserTestBase {
    *
    * @var array
    */
-  protected static $modules = [
+  public static $modules = [
     'toolbar',
     'toolbar_test',
     'locale',
@@ -35,7 +35,7 @@ class ToolbarMenuTranslationTest extends BrowserTestBase {
    */
   protected $defaultTheme = 'stark';
 
-  protected function setUp(): void {
+  protected function setUp() {
     parent::setUp();
 
     // Create an administrative user and log it in.
@@ -56,7 +56,7 @@ class ToolbarMenuTranslationTest extends BrowserTestBase {
 
     // Add Spanish.
     $edit['predefined_langcode'] = $langcode;
-    $this->drupalPostForm('admin/config/regional/language/add', $edit, 'Add language');
+    $this->drupalPostForm('admin/config/regional/language/add', $edit, t('Add language'));
 
     // The menu item 'Structure' in the toolbar will be translated.
     $menu_item = 'Structure';
@@ -70,7 +70,7 @@ class ToolbarMenuTranslationTest extends BrowserTestBase {
       'langcode' => $langcode,
       'translation' => 'untranslated',
     ];
-    $this->drupalPostForm('admin/config/regional/translate', $search, 'Filter');
+    $this->drupalPostForm('admin/config/regional/translate', $search, t('Filter'));
     // Make sure will be able to translate the menu item.
     $this->assertNoText('No strings available.', 'Search found the menu item as untranslated.');
 
@@ -85,7 +85,7 @@ class ToolbarMenuTranslationTest extends BrowserTestBase {
     $edit = [
       $lid => $menu_item_translated,
     ];
-    $this->drupalPostForm('admin/config/regional/translate', $edit, 'Save translations');
+    $this->drupalPostForm('admin/config/regional/translate', $edit, t('Save translations'));
 
     // Search for the translated menu item.
     $search = [
@@ -93,7 +93,7 @@ class ToolbarMenuTranslationTest extends BrowserTestBase {
       'langcode' => $langcode,
       'translation' => 'translated',
     ];
-    $this->drupalPostForm('admin/config/regional/translate', $search, 'Filter');
+    $this->drupalPostForm('admin/config/regional/translate', $search, t('Filter'));
     // Make sure the menu item string was translated.
     $this->assertText($menu_item_translated, 'Search found the menu item as translated: ' . $menu_item_translated . '.');
 

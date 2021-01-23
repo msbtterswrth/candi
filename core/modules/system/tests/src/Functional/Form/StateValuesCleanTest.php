@@ -19,7 +19,7 @@ class StateValuesCleanTest extends BrowserTestBase {
    *
    * @var array
    */
-  protected static $modules = ['form_test'];
+  public static $modules = ['form_test'];
 
   /**
    * {@inheritdoc}
@@ -30,7 +30,7 @@ class StateValuesCleanTest extends BrowserTestBase {
    * Tests \Drupal\Core\Form\FormState::cleanValues().
    */
   public function testFormStateValuesClean() {
-    $this->drupalPostForm('form_test/form-state-values-clean', [], 'Submit');
+    $this->drupalPostForm('form_test/form-state-values-clean', [], t('Submit'));
     $values = Json::decode($this->getSession()->getPage()->getContent());
 
     // Setup the expected result.

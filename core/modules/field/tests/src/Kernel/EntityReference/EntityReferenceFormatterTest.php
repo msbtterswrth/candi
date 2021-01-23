@@ -61,7 +61,7 @@ class EntityReferenceFormatterTest extends EntityKernelTestBase {
    */
   protected $unsavedReferencedEntity;
 
-  protected function setUp(): void {
+  protected function setUp() {
     parent::setUp();
 
     // Use Classy theme for testing markup output.
@@ -73,6 +73,9 @@ class EntityReferenceFormatterTest extends EntityKernelTestBase {
     Role::load(RoleInterface::ANONYMOUS_ID)
       ->grantPermission('view test entity')
       ->save();
+
+    // The label formatter rendering generates links, so build the router.
+    $this->container->get('router.builder')->rebuild();
 
     $this->createEntityReferenceField($this->entityType, $this->bundle, $this->fieldName, 'Field test', $this->entityType, 'default', [], FieldStorageDefinitionInterface::CARDINALITY_UNLIMITED);
 

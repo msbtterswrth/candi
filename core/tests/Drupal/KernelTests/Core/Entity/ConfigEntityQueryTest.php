@@ -19,7 +19,7 @@ class ConfigEntityQueryTest extends KernelTestBase {
    *
    * @var array
    */
-  protected static $modules = ['config_test'];
+  public static $modules = ['config_test'];
 
   /**
    * Stores the search results for alter comparison.
@@ -49,7 +49,7 @@ class ConfigEntityQueryTest extends KernelTestBase {
    */
   protected $entities;
 
-  protected function setUp(): void {
+  protected function setUp() {
     parent::setUp();
 
     $this->entities = [];
@@ -431,7 +431,7 @@ class ConfigEntityQueryTest extends KernelTestBase {
     $count = $this->entityStorage->getQuery()
       ->count()
       ->execute();
-    $this->assertCount($count, $this->entities);
+    $this->assertIdentical($count, count($this->entities));
 
     // Test count on a complex query.
     $query = $this->entityStorage->getQuery('OR');
@@ -728,8 +728,7 @@ class ConfigEntityQueryTest extends KernelTestBase {
    *   Array of expected entity IDs.
    */
   protected function assertResults($expected) {
-    $expected_count = count($expected);
-    $this->assertCount($expected_count, $this->queryResults);
+    $this->assertIdentical(count($this->queryResults), count($expected));
     foreach ($expected as $value) {
       // This also tests whether $this->queryResults[$value] is even set at all.
       $this->assertIdentical($this->queryResults[$value], $value);

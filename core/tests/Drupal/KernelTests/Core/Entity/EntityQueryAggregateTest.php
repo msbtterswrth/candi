@@ -18,7 +18,7 @@ class EntityQueryAggregateTest extends EntityKernelTestBase {
    *
    * @var array
    */
-  protected static $modules = [];
+  public static $modules = [];
 
   /**
    * The entity_test storage to create the test entities.
@@ -34,7 +34,7 @@ class EntityQueryAggregateTest extends EntityKernelTestBase {
    */
   protected $queryResult;
 
-  protected function setUp(): void {
+  protected function setUp() {
     parent::setUp();
 
     $this->entityStorage = $this->entityTypeManager->getStorage('entity_test');
@@ -517,7 +517,7 @@ class EntityQueryAggregateTest extends EntityKernelTestBase {
       ['field_test_1' => 1, 'field_test_2_count' => 2],
     ]);
 
-    // Group by and aggregate by Field API field, and sort by the aggregated
+    // Groupby and aggregate by fieldapi field, and sort by the aggregated
     // field.
     $this->queryResult = $this->entityStorage->getAggregateQuery()
       ->groupBy('field_test_1')

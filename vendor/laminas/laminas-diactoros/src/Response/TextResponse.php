@@ -6,11 +6,9 @@
  * @license   https://github.com/laminas/laminas-diactoros/blob/master/LICENSE.md New BSD License
  */
 
-declare(strict_types=1);
-
 namespace Laminas\Diactoros\Response;
 
-use Laminas\Diactoros\Exception;
+use InvalidArgumentException;
 use Laminas\Diactoros\Response;
 use Laminas\Diactoros\Stream;
 use Psr\Http\Message\StreamInterface;
@@ -41,9 +39,9 @@ class TextResponse extends Response
      * @param string|StreamInterface $text String or stream for the message body.
      * @param int $status Integer status code for the response; 200 by default.
      * @param array $headers Array of headers to use at initialization.
-     * @throws Exception\InvalidArgumentException if $text is neither a string or stream.
+     * @throws InvalidArgumentException if $text is neither a string or stream.
      */
-    public function __construct($text, int $status = 200, array $headers = [])
+    public function __construct($text, $status = 200, array $headers = [])
     {
         parent::__construct(
             $this->createBody($text),
@@ -56,16 +54,17 @@ class TextResponse extends Response
      * Create the message body.
      *
      * @param string|StreamInterface $text
-     * @throws Exception\InvalidArgumentException if $text is neither a string or stream.
+     * @return StreamInterface
+     * @throws InvalidArgumentException if $html is neither a string or stream.
      */
-    private function createBody($text) : StreamInterface
+    private function createBody($text)
     {
         if ($text instanceof StreamInterface) {
             return $text;
         }
 
         if (! is_string($text)) {
-            throw new Exception\InvalidArgumentException(sprintf(
+            throw new InvalidArgumentException(sprintf(
                 'Invalid content (%s) provided to %s',
                 (is_object($text) ? get_class($text) : gettype($text)),
                 __CLASS__

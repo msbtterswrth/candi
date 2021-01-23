@@ -27,9 +27,9 @@ class ModerationStateNodeTypeTest extends ModerationStateTestBase {
     $this->grantUserPermissionToCreateContentOfType($this->adminUser, 'not_moderated');
     $this->drupalGet('node/add/not_moderated');
     $this->assertRaw('Save');
-    $this->submitForm([
+    $this->drupalPostForm(NULL, [
       'title[0][value]' => 'Test',
-    ], 'Save');
+    ], t('Save'));
     $this->assertText('Not moderated Test has been created.');
   }
 
@@ -62,9 +62,9 @@ class ModerationStateNodeTypeTest extends ModerationStateTestBase {
 
     // Create content.
     $this->drupalGet('node/add/not_moderated');
-    $this->submitForm([
+    $this->drupalPostForm(NULL, [
       'title[0][value]' => 'Test',
-    ], 'Save');
+    ], t('Save'));
     $this->assertText('Not moderated Test has been created.');
 
     // Check that the 'Create new revision' is not disabled.
@@ -89,7 +89,7 @@ class ModerationStateNodeTypeTest extends ModerationStateTestBase {
     $node = reset($nodes);
     $this->drupalGet('node/' . $node->id());
     $this->assertSession()->statusCodeEquals(200);
-    $this->assertSession()->linkByHrefExists('node/' . $node->id() . '/edit');
+    $this->assertLinkByHref('node/' . $node->id() . '/edit');
     $this->drupalGet('node/' . $node->id() . '/edit');
     $this->assertSession()->statusCodeEquals(200);
     $this->assertSession()->optionExists('moderation_state[0][state]', 'draft');

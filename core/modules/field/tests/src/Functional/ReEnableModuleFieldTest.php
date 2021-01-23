@@ -21,7 +21,7 @@ class ReEnableModuleFieldTest extends BrowserTestBase {
    *
    * @var array
    */
-  protected static $modules = [
+  public static $modules = [
     'field',
     'node',
     // We use telephone module instead of test_field because test_field is
@@ -34,7 +34,7 @@ class ReEnableModuleFieldTest extends BrowserTestBase {
    */
   protected $defaultTheme = 'stark';
 
-  protected function setUp(): void {
+  protected function setUp() {
     parent::setUp();
 
     $this->drupalCreateContentType(['type' => 'article']);
@@ -83,7 +83,7 @@ class ReEnableModuleFieldTest extends BrowserTestBase {
 
     // Display the article node form and verify the telephone widget is present.
     $this->drupalGet('node/add/article');
-    $this->assertSession()->fieldValueEquals("field_telephone[0][value]", '');
+    $this->assertFieldByName("field_telephone[0][value]", '', 'Widget found.');
 
     // Submit an article node with a telephone field so data exist for the
     // field.
@@ -91,7 +91,7 @@ class ReEnableModuleFieldTest extends BrowserTestBase {
       'title[0][value]' => $this->randomMachineName(),
       'field_telephone[0][value]' => "123456789",
     ];
-    $this->submitForm($edit, 'Save');
+    $this->drupalPostForm(NULL, $edit, t('Save'));
     $this->assertRaw('<a href="tel:123456789">');
 
     // Test that the module can't be uninstalled from the UI while there is data

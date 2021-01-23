@@ -6,8 +6,6 @@
  * @license   https://github.com/laminas/laminas-diactoros/blob/master/LICENSE.md New BSD License
  */
 
-declare(strict_types=1);
-
 namespace Zend\Diactoros;
 
 use function Laminas\Diactoros\normalizeServer as laminas_normalizeServer;
@@ -15,7 +13,7 @@ use function Laminas\Diactoros\normalizeServer as laminas_normalizeServer;
 /**
  * @deprecated Use Laminas\Diactoros\normalizeServer instead
  */
-function normalizeServer(array $server, callable $apacheRequestHeaderCallback = null) : array
+function normalizeServer(array $server, callable $apacheRequestHeaderCallback = null)
 {
     return laminas_normalizeServer(...func_get_args());
 }

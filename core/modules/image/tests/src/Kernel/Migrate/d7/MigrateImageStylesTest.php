@@ -17,12 +17,12 @@ class MigrateImageStylesTest extends MigrateDrupal7TestBase {
   /**
    * {@inheritdoc}
    */
-  protected static $modules = ['image'];
+  public static $modules = ['image'];
 
   /**
    * {@inheritdoc}
    */
-  protected function setUp(): void {
+  protected function setUp() {
     parent::setUp();
     $this->installConfig(static::$modules);
     $this->executeMigration('d7_image_styles');
@@ -58,7 +58,7 @@ class MigrateImageStylesTest extends MigrateDrupal7TestBase {
 
     // Check the number of effects associated with the style.
     $effects = $style->getEffects();
-    $this->assertSame(count($expected_effect_plugins), count($effects));
+    $this->assertIdentical(count($effects), count($expected_effect_plugins));
 
     $index = 0;
     foreach ($effects as $effect) {

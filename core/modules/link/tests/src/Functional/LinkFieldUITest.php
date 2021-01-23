@@ -25,7 +25,7 @@ class LinkFieldUITest extends BrowserTestBase {
    *
    * @var array
    */
-  protected static $modules = ['node', 'link', 'field_ui', 'block'];
+  public static $modules = ['node', 'link', 'field_ui', 'block'];
 
   /**
    * {@inheritdoc}
@@ -63,7 +63,7 @@ class LinkFieldUITest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp(): void {
+  protected function setUp() {
     parent::setUp();
 
     $this->firstContentType = $this->drupalCreateContentType();
@@ -173,7 +173,7 @@ class LinkFieldUITest extends BrowserTestBase {
     // generate warnings.
     // @todo Mess with the formatter settings a bit here.
     $this->drupalGet("$type_path/display");
-    $this->assertText('Link text trimmed to 80 characters');
+    $this->assertText(t('Link text trimmed to @limit characters', ['@limit' => 80]));
 
     $storage = FieldStorageConfig::create([
       'field_name' => $field_name,

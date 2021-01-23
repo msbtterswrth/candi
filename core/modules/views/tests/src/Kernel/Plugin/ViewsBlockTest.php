@@ -19,7 +19,7 @@ class ViewsBlockTest extends ViewsKernelTestBase {
    *
    * @var array
    */
-  protected static $modules = ['block', 'block_test_views'];
+  public static $modules = ['block', 'block_test_views'];
 
   /**
    * Views used by this test.
@@ -31,10 +31,10 @@ class ViewsBlockTest extends ViewsKernelTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp($import_test_views = TRUE): void {
+  protected function setUp($import_test_views = TRUE) {
     parent::setUp();
 
-    ViewTestData::createTestViews(static::class, ['block_test_views']);
+    ViewTestData::createTestViews(get_class($this), ['block_test_views']);
   }
 
   /**

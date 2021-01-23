@@ -24,7 +24,7 @@ class MenuLinkTest extends ViewTestBase {
    *
    * @var array
    */
-  protected static $modules = [
+  public static $modules = [
     'views',
     'views_ui',
     'user',
@@ -48,7 +48,7 @@ class MenuLinkTest extends ViewTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp($import_test_views = TRUE): void {
+  protected function setUp($import_test_views = TRUE) {
     parent::setUp($import_test_views);
 
     $this->enableViewsTestModule();
@@ -90,11 +90,11 @@ class MenuLinkTest extends ViewTestBase {
     ], 'Apply');
 
     // Save view which has pending changes.
-    $this->submitForm([], 'Save');
+    $this->drupalPostForm(NULL, [], 'Save');
 
     // Test if the node as parent menu item is selected in our views settings.
     $this->drupalGet('admin/structure/views/nojs/display/test_menu_link/page_1/menu');
-    $this->assertTrue($this->assertSession()->optionExists('edit-menu-parent', $parent_menu_value)->isSelected());
+    $this->assertOptionSelected('edit-menu-parent', $parent_menu_value);
 
     $this->drupalGet('');
 

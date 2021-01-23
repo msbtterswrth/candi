@@ -68,13 +68,17 @@ class Vid extends NumericArgument {
   public function titleQuery() {
     $titles = [];
 
-    $results = $this->nodeStorage->getAggregateQuery()
-      ->allRevisions()
-      ->groupBy('title')
-      ->execute();
+    $results = $this->database->query('SELECT nr.vid, nr.nid, npr.title FROM {node_revision} nr WHERE nr.vid IN ( :vids[] )', [':vids[]' => $this->value])->fetchAllAssoc('vid', PDO::FETCH_ASSOC);
+    $nids = [];
+    foreach ($results as $result) {
+      $nids[] = $result['nid'];
+    }
+
+    $nodes = $this->nodeStorage->loadMultiple(array_unique($nids));
 
     foreach ($results as $result) {
-      $titles[] = $result['title'];
+      $nodes[$result['nid']]->set('title', $result['title']);
+      $titles[] = $nodes[$result['nid']]->label();
     }
 
     return $titles;

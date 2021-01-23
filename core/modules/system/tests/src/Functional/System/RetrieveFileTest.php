@@ -24,7 +24,6 @@ class RetrieveFileTest extends BrowserTestBase {
     /** @var \Drupal\Core\File\FileSystemInterface $file_system */
     $file_system = \Drupal::service('file_system');
     $file_system->mkdir($sourcedir = 'public://' . $this->randomMachineName());
-    // cSpell:disable-next-line
     $filename = 'Файл для тестирования ' . $this->randomMachineName();
     $url = file_create_url($sourcedir . '/' . $filename);
     $retrieved_file = system_retrieve_file($url);

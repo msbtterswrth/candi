@@ -17,7 +17,7 @@ class NormalizeTest extends NormalizerTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp(): void {
+  protected function setUp() {
     parent::setUp();
 
     FilterFormat::create([
@@ -40,6 +40,8 @@ class NormalizeTest extends NormalizerTestBase {
         ],
       ],
     ])->save();
+
+    \Drupal::service('router.builder')->rebuild();
   }
 
   /**

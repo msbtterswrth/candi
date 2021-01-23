@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\node\Functional;
 
+use Drupal\Core\Database\Database;
 use Drupal\node\Entity\NodeType;
 
 /**
@@ -16,7 +17,7 @@ class NodeAccessBaseTableTest extends NodeTestBase {
    *
    * @var array
    */
-  protected static $modules = ['node_access_test', 'views'];
+  public static $modules = ['node_access_test', 'views'];
 
   /**
    * {@inheritdoc}
@@ -65,7 +66,7 @@ class NodeAccessBaseTableTest extends NodeTestBase {
    */
   protected $nidsVisible;
 
-  protected function setUp(): void {
+  protected function setUp() {
     parent::setUp();
 
     node_access_test_add_field(NodeType::load('article'));
@@ -120,7 +121,7 @@ class NodeAccessBaseTableTest extends NodeTestBase {
           $edit['field_tags[target_id]'] = 'public';
         }
 
-        $this->drupalPostForm('node/add/article', $edit, 'Save');
+        $this->drupalPostForm('node/add/article', $edit, t('Save'));
         $node = $this->drupalGetNodeByTitle($edit['title[0][value]']);
         $this->assertEqual($is_private, (int) $node->private->value, 'The private status of the node was properly set in the node_access_test table.');
         if ($is_private) {
@@ -130,19 +131,9 @@ class NodeAccessBaseTableTest extends NodeTestBase {
         $this->nodesByUser[$this->webUser->id()][$node->id()] = $is_private;
       }
     }
-    $public_tids = \Drupal::entityQuery('taxonomy_term')
-      ->accessCheck(FALSE)
-      ->condition('name', 'public')
-      ->condition('default_langcode', 1)
-      ->execute();
-    $this->publicTid = reset($public_tids);
-    $private_tids = \Drupal::entityQuery('taxonomy_term')
-      ->accessCheck(FALSE)
-      ->condition('name', 'private')
-      ->condition('default_langcode', 1)
-      ->execute();
-    $this->privateTid = reset($private_tids);
-
+    $connection = Database::getConnection();
+    $this->publicTid = $connection->query('SELECT tid FROM {taxonomy_term_field_data} WHERE name = :name AND default_langcode = 1', [':name' => 'public'])->fetchField();
+    $this->privateTid = $connection->query('SELECT tid FROM {taxonomy_term_field_data} WHERE name = :name AND default_langcode = 1', [':name' => 'private'])->fetchField();
     $this->assertNotEmpty($this->publicTid, 'Public tid was found');
     $this->assertNotEmpty($this->privateTid, 'Private tid was found');
     foreach ($simple_users as $this->webUser) {
@@ -157,7 +148,12 @@ class NodeAccessBaseTableTest extends NodeTestBase {
           else {
             $should_be_visible = TRUE;
           }
-          $this->assertSession()->statusCodeEquals($should_be_visible ? 200 : 403);
+          $this->assertSession()->statusCodeEquals($should_be_visible ? 200 : 403, strtr('A %private node by user %uid is %visible for user %current_uid.', [
+            '%private' => $is_private ? 'private' : 'public',
+            '%uid' => $uid,
+            '%visible' => $should_be_visible ? 'visible' : 'not visible',
+            '%current_uid' => $this->webUser->id(),
+          ]));
         }
       }
 

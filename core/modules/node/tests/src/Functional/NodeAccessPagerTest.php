@@ -21,14 +21,14 @@ class NodeAccessPagerTest extends BrowserTestBase {
    *
    * @var array
    */
-  protected static $modules = ['node_access_test', 'comment', 'forum'];
+  public static $modules = ['node_access_test', 'comment', 'forum'];
 
   /**
    * {@inheritdoc}
    */
   protected $defaultTheme = 'stark';
 
-  protected function setUp(): void {
+  protected function setUp() {
     parent::setUp();
 
     node_access_rebuild();
@@ -69,7 +69,7 @@ class NodeAccessPagerTest extends BrowserTestBase {
     // be two pages (0, 1) but no third (2) page.
     $this->drupalGet('node/' . $node->id());
     $this->assertText($node->label());
-    $this->assertText('Comments');
+    $this->assertText(t('Comments'));
     $this->assertRaw('page=1');
     $this->assertNoRaw('page=2');
   }

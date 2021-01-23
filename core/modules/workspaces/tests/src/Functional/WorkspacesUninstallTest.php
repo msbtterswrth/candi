@@ -19,7 +19,7 @@ class WorkspacesUninstallTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected static $modules = ['workspaces'];
+  public static $modules = ['workspaces'];
 
   /**
    * {@inheritdoc}
@@ -38,7 +38,7 @@ class WorkspacesUninstallTest extends BrowserTestBase {
     $session->pageTextContains('Are you sure you want to delete all workspaces?');
     $this->drupalPostForm('/admin/modules/uninstall/entity/workspace', [], 'Delete all workspaces');
     $this->drupalPostForm('admin/modules/uninstall', ['uninstall[workspaces]' => TRUE], 'Uninstall');
-    $this->submitForm([], 'Uninstall');
+    $this->drupalPostForm(NULL, [], 'Uninstall');
     $session->pageTextContains('The selected modules have been uninstalled.');
     $session->pageTextNotContains('Workspaces');
 
@@ -48,6 +48,8 @@ class WorkspacesUninstallTest extends BrowserTestBase {
     $entity_type = \Drupal::entityDefinitionUpdateManager()->getEntityType('node');
     $revision_metadata_keys = $entity_type->get('revision_metadata_keys');
     $this->assertArrayNotHasKey('workspace', $revision_metadata_keys);
+    $required_revision_metadata_keys = $entity_type->get('requiredRevisionMetadataKeys');
+    $this->assertArrayNotHasKey('workspace', $required_revision_metadata_keys);
   }
 
 }

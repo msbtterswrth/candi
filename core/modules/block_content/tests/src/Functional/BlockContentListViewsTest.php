@@ -18,7 +18,7 @@ class BlockContentListViewsTest extends BlockContentTestBase {
    *
    * @var array
    */
-  protected static $modules = [
+  public static $modules = [
     'block',
     'block_content',
     'config_translation',
@@ -41,11 +41,11 @@ class BlockContentListViewsTest extends BlockContentTestBase {
     $this->drupalGet('admin/structure/block/block-content');
 
     // Test for the page title.
-    $this->assertSession()->titleEquals('Custom block library | Drupal');
+    $this->assertTitle('Custom block library | Drupal');
 
     // Test for the exposed filters.
-    $this->assertSession()->fieldExists('info');
-    $this->assertSession()->fieldExists('type');
+    $this->assertFieldByName('info');
+    $this->assertFieldByName('type');
 
     // Test for the table.
     $element = $this->xpath('//div[@class="layout-content"]//table');
@@ -76,11 +76,11 @@ class BlockContentListViewsTest extends BlockContentTestBase {
     $edit = [];
     $edit['info[0][value]'] = $label;
     $edit['body[0][value]'] = $this->randomMachineName(16);
-    $this->submitForm($edit, 'Save');
+    $this->drupalPostForm(NULL, $edit, t('Save'));
 
     // Confirm that once the user returns to the listing, the text of the label
     // (versus elsewhere on the page).
-    $this->assertSession()->elementTextContains('xpath', '//td/a', $label);
+    $this->assertFieldByXpath('//td/a', $label, 'Label found for added block.');
 
     // Check the number of table row cells.
     $elements = $this->xpath('//div[@class="layout-content"]//table/tbody/tr/td');
@@ -97,12 +97,12 @@ class BlockContentListViewsTest extends BlockContentTestBase {
       ->loadByProperties(['info' => $label]);
     $block = reset($blocks);
     if (!empty($block)) {
-      $this->assertSession()->linkByHrefExists('block/' . $block->id());
+      $this->assertLinkByHref('block/' . $block->id());
       $this->clickLink(t('Edit'));
       $this->assertSession()->statusCodeEquals(200);
-      $this->assertSession()->titleEquals("Edit custom block $label | Drupal");
+      $this->assertTitle("Edit custom block $label | Drupal");
       $edit = ['info[0][value]' => $new_label];
-      $this->submitForm($edit, 'Save');
+      $this->drupalPostForm(NULL, $edit, t('Save'));
     }
     else {
       $this->fail('Did not find Albatross block in the database.');
@@ -110,18 +110,19 @@ class BlockContentListViewsTest extends BlockContentTestBase {
 
     // Confirm that once the user returns to the listing, the text of the label
     // (versus elsewhere on the page).
-    $this->assertSession()->elementTextContains('xpath', '//td/a', $new_label);
+    $this->assertFieldByXpath('//td/a', $new_label, 'Label found for updated custom block.');
 
     // Delete the added entity using the operations link.
-    $this->assertSession()->linkByHrefExists('block/' . $block->id() . '/delete');
-    $this->clickLink('Delete');
+    $this->assertLinkByHref('block/' . $block->id() . '/delete');
+    $delete_text = t('Delete');
+    $this->clickLink($delete_text);
     $this->assertSession()->statusCodeEquals(200);
-    $this->assertSession()->titleEquals("Are you sure you want to delete the custom block $new_label? | Drupal");
-    $this->submitForm([], 'Delete');
+    $this->assertTitle("Are you sure you want to delete the custom block $new_label? | Drupal");
+    $this->drupalPostForm(NULL, [], $delete_text);
 
     // Verify that the text of the label and machine name does not appear in
     // the list (though it may appear elsewhere on the page).
-    $this->assertSession()->elementTextNotContains('xpath', '//td', $new_label);
+    $this->assertNoFieldByXpath('//td', $new_label, 'No label found for deleted custom block.');
 
     // Confirm that the empty text is displayed.
     $this->assertText('There are no custom blocks available.');

@@ -50,7 +50,7 @@ class StatisticsPopularBlock extends BlockBase implements ContainerFactoryPlugin
   protected $renderer;
 
   /**
-   * Constructs a StatisticsPopularBlock object.
+   * Constructs an StatisticsPopularBlock object.
    *
    * @param array $configuration
    *   A configuration array containing information about the plugin instance.

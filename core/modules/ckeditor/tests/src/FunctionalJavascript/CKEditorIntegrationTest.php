@@ -42,12 +42,12 @@ class CKEditorIntegrationTest extends WebDriverTestBase {
   /**
    * {@inheritdoc}
    */
-  protected static $modules = ['node', 'ckeditor', 'filter', 'ckeditor_test'];
+  public static $modules = ['node', 'ckeditor', 'filter', 'ckeditor_test'];
 
   /**
    * {@inheritdoc}
    */
-  protected function setUp(): void {
+  protected function setUp() {
     parent::setUp();
 
     // Create a text format and associate CKEditor.
@@ -203,7 +203,7 @@ class CKEditorIntegrationTest extends WebDriverTestBase {
     $assert_session->assertWaitOnAjaxRequest();
 
     // Check the background color of two CKEditor elements to confirm they are
-    // not overridden by the off-canvas css reset.
+    // not overriden by the off-canvas css reset.
     $assert_session->elementExists('css', '.cke_top');
     $ckeditor_top_bg_color = $this->getSession()->evaluateScript('window.getComputedStyle(document.getElementsByClassName(\'cke_top\')[0]).backgroundColor');
     $this->assertEqual($ckeditor_top_bg_color, 'rgb(248, 248, 248)');

@@ -95,7 +95,10 @@ trait BookTestTrait {
 
     // Check outline structure.
     if ($nodes !== NULL) {
-      $this->assertSession()->responseMatches($this->generateOutlinePattern($nodes));
+      $this->assertPattern($this->generateOutlinePattern($nodes));
+    }
+    else {
+      $this->pass(new FormattableMarkup('Node %number does not have outline.', ['%number' => $number]));
     }
 
     // Check previous, up, and next links.
@@ -104,14 +107,14 @@ trait BookTestTrait {
       $url = $previous->toUrl();
       $url->setOptions(['attributes' => ['rel' => ['prev'], 'title' => t('Go to previous page')]]);
       $text = new FormattableMarkup('<b>‹</b> @label', ['@label' => $previous->label()]);
-      $this->assertRaw(Link::fromTextAndUrl($text, $url)->toString());
+      $this->assertRaw(Link::fromTextAndUrl($text, $url)->toString(), 'Previous page link found.');
     }
 
     if ($up) {
       /** @var \Drupal\Core\Url $url */
       $url = $up->toUrl();
       $url->setOptions(['attributes' => ['title' => t('Go to parent page')]]);
-      $this->assertRaw(Link::fromTextAndUrl('Up', $url)->toString());
+      $this->assertRaw(Link::fromTextAndUrl('Up', $url)->toString(), 'Up page link found.');
     }
 
     if ($next) {
@@ -119,7 +122,7 @@ trait BookTestTrait {
       $url = $next->toUrl();
       $url->setOptions(['attributes' => ['rel' => ['next'], 'title' => t('Go to next page')]]);
       $text = new FormattableMarkup('@label <b>›</b>', ['@label' => $next->label()]);
-      $this->assertRaw(Link::fromTextAndUrl($text, $url)->toString());
+      $this->assertRaw(Link::fromTextAndUrl($text, $url)->toString(), 'Next page link found.');
     }
 
     // Compute the expected breadcrumb.
@@ -142,7 +145,7 @@ trait BookTestTrait {
     // Check printer friendly version.
     $this->drupalGet('book/export/html/' . $node->id());
     $this->assertText($node->label(), 'Printer friendly title found.');
-    $this->assertRaw($node->body->processed);
+    $this->assertRaw($node->body->processed, 'Printer friendly body found.');
 
     $number++;
   }
@@ -191,16 +194,16 @@ trait BookTestTrait {
     $edit['book[bid]'] = $book_nid;
 
     if ($parent !== NULL) {
-      $this->drupalPostForm('node/add/book', $edit, 'Change book (update list of parents)');
+      $this->drupalPostForm('node/add/book', $edit, t('Change book (update list of parents)'));
 
       $edit['book[pid]'] = $parent;
-      $this->submitForm($edit, 'Save');
+      $this->drupalPostForm(NULL, $edit, t('Save'));
       // Make sure the parent was flagged as having children.
       $parent_node = \Drupal::entityTypeManager()->getStorage('node')->loadUnchanged($parent);
       $this->assertFalse(empty($parent_node->book['has_children']), 'Parent node is marked as having children');
     }
     else {
-      $this->drupalPostForm('node/add/book', $edit, 'Save');
+      $this->drupalPostForm('node/add/book', $edit, t('Save'));
     }
 
     // Check to make sure the book node was created.

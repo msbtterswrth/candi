@@ -27,7 +27,7 @@ class EntityQueryTest extends EntityKernelTestBase {
    *
    * @var array
    */
-  protected static $modules = ['field_test', 'language'];
+  public static $modules = ['field_test', 'language'];
 
   /**
    * @var array
@@ -62,7 +62,7 @@ class EntityQueryTest extends EntityKernelTestBase {
    */
   protected $storage;
 
-  protected function setUp(): void {
+  protected function setUp() {
     parent::setUp();
 
     $this->installEntitySchema('entity_test_mulrev');
@@ -711,7 +711,7 @@ class EntityQueryTest extends EntityKernelTestBase {
     for ($i = 1; $i <= 15; $i += 2) {
       $ok = TRUE;
       $index1 = array_search($i, $this->queryResults);
-      $this->assertNotFalse($index1, "$i found at $index1.");
+      $this->assertNotIdentical($index1, FALSE, "$i found at $index1.");
       // This loop is for bundle2 entities.
       for ($j = 2; $j <= 15; $j += 2) {
         if ($ok) {
@@ -975,7 +975,7 @@ class EntityQueryTest extends EntityKernelTestBase {
       'name' => $this->randomMachineName(),
       'vid' => 'tags',
       'description' => [
-        'value' => 'description1',
+        'value' => $this->randomString(),
         'format' => 'format1',
       ],
     ]);
@@ -985,37 +985,20 @@ class EntityQueryTest extends EntityKernelTestBase {
       'name' => $this->randomMachineName(),
       'vid' => 'tags',
       'description' => [
-        'value' => 'description2',
+        'value' => $this->randomString(),
         'format' => 'format2',
       ],
     ]);
     $term2->save();
-
-    // Test that the properties can be queried directly.
-    $ids = $this->container->get('entity_type.manager')
-      ->getStorage('taxonomy_term')
-      ->getQuery()
-      ->condition('description.value', 'description1')
-      ->execute();
-    $this->assertCount(1, $ids);
-    $this->assertEquals($term1->id(), reset($ids));
 
     $ids = $this->container->get('entity_type.manager')
       ->getStorage('taxonomy_term')
       ->getQuery()
       ->condition('description.format', 'format1')
       ->execute();
-    $this->assertCount(1, $ids);
-    $this->assertEquals($term1->id(), reset($ids));
 
-    // Test that the main property is queried if no property is specified.
-    $ids = $this->container->get('entity_type.manager')
-      ->getStorage('taxonomy_term')
-      ->getQuery()
-      ->condition('description', 'description1')
-      ->execute();
     $this->assertCount(1, $ids);
-    $this->assertEquals($term1->id(), reset($ids));
+    $this->assertEqual($term1->id(), reset($ids));
   }
 
   /**
@@ -1248,17 +1231,16 @@ class EntityQueryTest extends EntityKernelTestBase {
     $expected = $connection->select("entity_test_mulrev", "base_table");
     $expected->addField("base_table", "revision_id", "revision_id");
     $expected->addField("base_table", "id", "id");
-    $expected->join("entity_test_mulrev__$figures", "entity_test_mulrev__$figures", '[entity_test_mulrev__' . $figures . '].[entity_id] = [base_table].[id]');
-    $expected->join("entity_test_mulrev__$figures", "entity_test_mulrev__{$figures}_2", '[entity_test_mulrev__' . $figures . '_2].[entity_id] = [base_table].[id]');
-    $expected->addJoin("LEFT", "entity_test_mulrev__$figures", "entity_test_mulrev__{$figures}_3", '[entity_test_mulrev__' . $figures . '_3].[entity_id] = [base_table].[id]');
+    $expected->join("entity_test_mulrev__$figures", "entity_test_mulrev__$figures", "entity_test_mulrev__$figures.entity_id = base_table.id");
+    $expected->join("entity_test_mulrev__$figures", "entity_test_mulrev__{$figures}_2", "entity_test_mulrev__{$figures}_2.entity_id = base_table.id");
+    $expected->addJoin("LEFT", "entity_test_mulrev__$figures", "entity_test_mulrev__{$figures}_3", "entity_test_mulrev__{$figures}_3.entity_id = base_table.id");
     $expected->condition("entity_test_mulrev__$figures.{$figures}_color", ["blue"], "IN");
     $expected->condition("entity_test_mulrev__{$figures}_2.{$figures}_color", ["red"], "IN");
     $expected->isNull("entity_test_mulrev__{$figures}_3.{$figures}_color");
     $expected->orderBy("base_table.id");
 
-    // Apply table prefixes and quote identifiers for the expected SQL.
-    $expected_string = $connection->prefixTables((string) $expected);
-    $expected_string = $connection->quoteIdentifiers($expected_string);
+    // Apply table prefixes to the expected SQL.
+    $expected_string = \Drupal::database()->prefixTables((string) $expected);
     // Resolve placeholders in the expected SQL to their values.
     $quoted = [];
     foreach ($expected->getArguments() as $key => $value) {

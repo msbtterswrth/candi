@@ -14,7 +14,7 @@ use Drupal\field\Entity\FieldStorageConfig;
  */
 class FieldAttachStorageTest extends FieldKernelTestBase {
 
-  protected function setUp(): void {
+  protected function setUp() {
     parent::setUp();
     $this->installEntitySchema('entity_test_rev');
   }
@@ -52,7 +52,7 @@ class FieldAttachStorageTest extends FieldKernelTestBase {
     $entity = $storage->load($entity_id);
     // Confirm current revision loads the correct data.
     // Number of values per field loaded equals the field cardinality.
-    $this->assertCount($cardinality, $entity->{$this->fieldTestData->field_name}, 'Current revision: expected number of values');
+    $this->assertEqual(count($entity->{$this->fieldTestData->field_name}), $cardinality, 'Current revision: expected number of values');
     for ($delta = 0; $delta < $cardinality; $delta++) {
       // The field value loaded matches the one inserted or updated.
       $this->assertEqual($entity->{$this->fieldTestData->field_name}[$delta]->value, $values[$current_revision][$delta]['value'], new FormattableMarkup('Current revision: expected value %delta was found.', ['%delta' => $delta]));
@@ -62,7 +62,7 @@ class FieldAttachStorageTest extends FieldKernelTestBase {
     foreach (array_keys($values) as $revision_id) {
       $entity = $storage->loadRevision($revision_id);
       // Number of values per field loaded equals the field cardinality.
-      $this->assertCount($cardinality, $entity->{$this->fieldTestData->field_name}, new FormattableMarkup('Revision %revision_id: expected number of values.', ['%revision_id' => $revision_id]));
+      $this->assertEqual(count($entity->{$this->fieldTestData->field_name}), $cardinality, new FormattableMarkup('Revision %revision_id: expected number of values.', ['%revision_id' => $revision_id]));
       for ($delta = 0; $delta < $cardinality; $delta++) {
         // The field value loaded matches the one inserted or updated.
         $this->assertEqual($entity->{$this->fieldTestData->field_name}[$delta]->value, $values[$revision_id][$delta]['value'], new FormattableMarkup('Revision %revision_id: expected value %delta was found.', ['%revision_id' => $revision_id, '%delta' => $delta]));
@@ -100,6 +100,7 @@ class FieldAttachStorageTest extends FieldKernelTestBase {
         'type' => 'test_field',
       ]);
       $field_storage->save();
+      $field_ids[$i] = $field_storage->uuid();
       foreach ($field_bundles_map[$i] as $bundle) {
         FieldConfig::create([
           'field_name' => $field_names[$i],
@@ -122,7 +123,7 @@ class FieldAttachStorageTest extends FieldKernelTestBase {
         $values[$index][$field_name] = mt_rand(1, 127);
         $entity->$field_name->setValue(['value' => $values[$index][$field_name]]);
       }
-      $entity->enforceIsNew();
+      $entity->enforceIsnew();
       $entity->save();
     }
 
@@ -255,7 +256,7 @@ class FieldAttachStorageTest extends FieldKernelTestBase {
     // Confirm each revision loads
     foreach ($vids as $vid) {
       $revision = $controller->loadRevision($vid);
-      $this->assertCount($cardinality, $revision->{$this->fieldTestData->field_name}, "The test entity revision $vid has $cardinality values.");
+      $this->assertEqual(count($revision->{$this->fieldTestData->field_name}), $cardinality, "The test entity revision $vid has $cardinality values.");
     }
 
     // Delete revision 1, confirm the other two still load.
@@ -264,13 +265,13 @@ class FieldAttachStorageTest extends FieldKernelTestBase {
     foreach ([0, 2] as $key) {
       $vid = $vids[$key];
       $revision = $controller->loadRevision($vid);
-      $this->assertCount($cardinality, $revision->{$this->fieldTestData->field_name}, "The test entity revision $vid has $cardinality values.");
+      $this->assertEqual(count($revision->{$this->fieldTestData->field_name}), $cardinality, "The test entity revision $vid has $cardinality values.");
     }
 
     // Confirm the current revision still loads
     $controller->resetCache();
     $current = $controller->load($entity->id());
-    $this->assertCount($cardinality, $current->{$this->fieldTestData->field_name}, "The test entity current revision has $cardinality values.");
+    $this->assertEqual(count($current->{$this->fieldTestData->field_name}), $cardinality, "The test entity current revision has $cardinality values.");
 
     // Delete all field data, confirm nothing loads
     $entity->delete();
@@ -307,7 +308,7 @@ class FieldAttachStorageTest extends FieldKernelTestBase {
 
     // Verify the field data is present on load.
     $entity = $this->entitySaveReload($entity);
-    $this->assertCount($cardinality, $entity->{$this->fieldTestData->field_name}, "Data is retrieved for the new bundle");
+    $this->assertEqual(count($entity->{$this->fieldTestData->field_name}), $cardinality, "Data is retrieved for the new bundle");
   }
 
   /**

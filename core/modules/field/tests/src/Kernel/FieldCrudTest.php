@@ -38,7 +38,7 @@ class FieldCrudTest extends FieldKernelTestBase {
    */
   protected $fieldDefinition;
 
-  public function setUp(): void {
+  public function setUp() {
     parent::setUp();
 
     $this->fieldStorageDefinition = [
@@ -284,7 +284,7 @@ class FieldCrudTest extends FieldKernelTestBase {
 
     // Test that the first field is not deleted, and then delete it.
     $field = current(\Drupal::entityTypeManager()->getStorage('field_config')->loadByProperties(['entity_type' => 'entity_test', 'field_name' => $this->fieldDefinition['field_name'], 'bundle' => $this->fieldDefinition['bundle'], 'include_deleted' => TRUE]));
-    $this->assertFalse($field->isDeleted());
+    $this->assertTrue(!empty($field) && empty($field->deleted), 'A new field is not marked for deletion.');
     $field->delete();
 
     // Make sure the field was deleted without being marked for purging as there
@@ -298,7 +298,7 @@ class FieldCrudTest extends FieldKernelTestBase {
 
     // Make sure the other field is not deleted.
     $another_field = FieldConfig::load('entity_test.' . $another_field_definition['bundle'] . '.' . $another_field_definition['field_name']);
-    $this->assertFalse($another_field->isDeleted());
+    $this->assertTrue(!empty($another_field) && !$another_field->isDeleted(), 'A non-deleted field is not marked for deletion.');
   }
 
   /**

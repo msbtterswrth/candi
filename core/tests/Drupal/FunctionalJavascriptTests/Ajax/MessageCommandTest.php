@@ -56,7 +56,7 @@ class MessageCommandTest extends WebDriverTestBase {
 
       $page->pressButton('Make Warning Message');
       $this->waitForMessageVisible('I am a warning message in the default location.', NULL, 'warning');
-      // Test that setting MessageCommand::$option['announce'] => '' suppresses
+      // Test that setting MessageCommand::$option['announce'] => '' supresses
       // screen reader announcement.
       $this->assertAnnounceNotContains('I am a warning message in the default location.');
       $this->waitForMessageRemoved('I am a message in the default location.');

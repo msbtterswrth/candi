@@ -12,7 +12,7 @@ use Drupal\workflows\TransitionInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Entity form variant for adding workflow transitions.
+ * Class WorkflowTransitionAddForm.
  *
  * @internal
  */
@@ -123,7 +123,7 @@ class WorkflowTransitionAddForm extends EntityForm {
   }
 
   /**
-   * Copies top-level form values to entity properties.
+   * Copies top-level form values to entity properties
    *
    * This form can only change values for a state, which is part of workflow.
    *

@@ -17,7 +17,7 @@ class UpdateScriptTest extends BrowserTestBase {
 
   use RequirementsPageTrait;
 
-  protected const HANDBOOK_MESSAGE = 'Review the suggestions for resolving this incompatibility to repair your installation, and then re-run update.php.';
+  const HANDBOOK_MESSAGE = 'Review the suggestions for resolving this incompatibility to repair your installation, and then re-run update.php.';
 
   /**
    * Modules to enable.
@@ -63,7 +63,7 @@ class UpdateScriptTest extends BrowserTestBase {
    */
   private $updateUser;
 
-  protected function setUp(): void {
+  protected function setUp() {
     parent::setUp();
     $this->updateUrl = Url::fromRoute('system.db_update');
     $this->statusReportUrl = Url::fromRoute('system.status');
@@ -130,9 +130,9 @@ class UpdateScriptTest extends BrowserTestBase {
     $this->drupalGet($this->updateUrl, ['external' => TRUE]);
     $this->updateRequirementsProblem();
     $this->clickLink(t('Continue'));
-    $this->assertText('No pending updates.', 'End of update process was reached.');
+    $this->assertText(t('No pending updates.'), 'End of update process was reached.');
     // Confirm that all caches were cleared.
-    $this->assertText('hook_cache_flush() invoked for update_script_test.module.', 'Caches were cleared when there were no requirements warnings or errors.');
+    $this->assertText(t('hook_cache_flush() invoked for update_script_test.module.'), 'Caches were cleared when there were no requirements warnings or errors.');
 
     // If there is a requirements warning, we expect it to be initially
     // displayed, but clicking the link to proceed should allow us to go
@@ -150,9 +150,9 @@ class UpdateScriptTest extends BrowserTestBase {
     $this->clickLink(t('Continue'));
     $this->clickLink(t('Apply pending updates'));
     $this->checkForMetaRefresh();
-    $this->assertText('The update_script_test_update_8001() update was executed successfully.', 'End of update process was reached.');
+    $this->assertText(t('The update_script_test_update_8001() update was executed successfully.'), 'End of update process was reached.');
     // Confirm that all caches were cleared.
-    $this->assertText('hook_cache_flush() invoked for update_script_test.module.', 'Caches were cleared after resolving a requirements warning and applying updates.');
+    $this->assertText(t('hook_cache_flush() invoked for update_script_test.module.'), 'Caches were cleared after resolving a requirements warning and applying updates.');
 
     // Now try again without pending updates to make sure that works too.
     $this->drupalGet($this->updateUrl, ['external' => TRUE]);
@@ -160,9 +160,9 @@ class UpdateScriptTest extends BrowserTestBase {
     $this->clickLink('try again');
     $this->assertNoText('This is a requirements warning provided by the update_script_test module.');
     $this->clickLink(t('Continue'));
-    $this->assertText('No pending updates.', 'End of update process was reached.');
+    $this->assertText(t('No pending updates.'), 'End of update process was reached.');
     // Confirm that all caches were cleared.
-    $this->assertText('hook_cache_flush() invoked for update_script_test.module.', 'Caches were cleared after applying updates and re-running the script.');
+    $this->assertText(t('hook_cache_flush() invoked for update_script_test.module.'), 'Caches were cleared after applying updates and re-running the script.');
 
     // If there is a requirements error, it should be displayed even after
     // clicking the link to proceed (since the problem that triggered the error
@@ -275,6 +275,17 @@ class UpdateScriptTest extends BrowserTestBase {
     $incompatible_module_message = "The following module is installed, but it is incompatible with Drupal " . \Drupal::VERSION . ":";
     $incompatible_theme_message = "The following theme is installed, but it is incompatible with Drupal " . \Drupal::VERSION . ":";
     return [
+      'module: core key incompatible' => [
+        [
+          'core_version_requirement' => '^8 || ^9',
+          'type' => 'module',
+        ],
+        [
+          'core' => '7.x',
+          'type' => 'module',
+        ],
+        $incompatible_module_message,
+      ],
       'module: core_version_requirement key incompatible' => [
         [
           'core_version_requirement' => '^8 || ^9',
@@ -285,6 +296,17 @@ class UpdateScriptTest extends BrowserTestBase {
           'type' => 'module',
         ],
         $incompatible_module_message,
+      ],
+      'theme: core key incompatible' => [
+        [
+          'core_version_requirement' => '^8 || ^9',
+          'type' => 'theme',
+        ],
+        [
+          'core' => '7.x',
+          'type' => 'theme',
+        ],
+        $incompatible_theme_message,
       ],
       'theme: core_version_requirement key incompatible' => [
         [
@@ -322,28 +344,6 @@ class UpdateScriptTest extends BrowserTestBase {
           'php' => 1000000000,
         ],
         'The following theme is installed, but it is incompatible with PHP ' . phpversion() . ":",
-      ],
-      'module: core_version_requirement key missing' => [
-        [
-          'core_version_requirement' => '^8 || ^9',
-          'type' => 'module',
-        ],
-        [
-          'core' => '8.x',
-          'type' => 'module',
-        ],
-        $incompatible_module_message,
-      ],
-      'theme: core_version_requirement key missing' => [
-        [
-          'core_version_requirement' => '^8 || ^9',
-          'type' => 'theme',
-        ],
-        [
-          'core' => '8.x',
-          'type' => 'theme',
-        ],
-        $incompatible_theme_message,
       ],
     ];
   }
@@ -414,6 +414,7 @@ class UpdateScriptTest extends BrowserTestBase {
 
     // Visit update.php and make sure we can click through to the 'No pending
     // updates' page without errors.
+    $assert_session = $this->assertSession();
     $this->drupalGet($this->updateUrl, ['external' => TRUE]);
     $this->updateRequirementsProblem();
     $this->clickLink(t('Continue'));
@@ -486,7 +487,7 @@ class UpdateScriptTest extends BrowserTestBase {
       $edit = [
         "modules[$extension_machine_name][enable]" => $extension_machine_name,
       ];
-      $this->drupalPostForm('admin/modules', $edit, 'Install');
+      $this->drupalPostForm('admin/modules', $edit, t('Install'));
     }
     elseif ($extension_type === 'theme') {
       $this->drupalGet('admin/appearance');
@@ -517,7 +518,7 @@ class UpdateScriptTest extends BrowserTestBase {
     $this->drupalGet($this->updateUrl, ['external' => TRUE]);
     $this->updateRequirementsProblem();
     $this->clickLink(t('Continue'));
-    $this->assertText('No pending updates.');
+    $this->assertText(t('No pending updates.'));
     $this->assertSession()->linkNotExists('Administration pages');
     $this->assertEmpty($this->xpath('//main//a[contains(@href, :href)]', [':href' => 'update.php']));
     $this->clickLink('Front page');
@@ -532,7 +533,7 @@ class UpdateScriptTest extends BrowserTestBase {
     $this->drupalGet($this->updateUrl, ['external' => TRUE]);
     $this->updateRequirementsProblem();
     $this->clickLink(t('Continue'));
-    $this->assertText('No pending updates.');
+    $this->assertText(t('No pending updates.'));
     $this->assertSession()->linkExists('Administration pages');
     $this->assertEmpty($this->xpath('//main//a[contains(@href, :href)]', [':href' => 'update.php']));
     $this->clickLink('Administration pages');
@@ -596,7 +597,7 @@ class UpdateScriptTest extends BrowserTestBase {
   }
 
   /**
-   * Tests performing updates with update.php in a multilingual environment.
+   * Tests perfoming updates with update.php in a multilingual environment.
    */
   public function testSuccessfulMultilingualUpdateFunctionality() {
     // Add some custom languages.
@@ -636,8 +637,8 @@ class UpdateScriptTest extends BrowserTestBase {
     // Visit status report page and ensure, that link to update.php has no path prefix set.
     $this->drupalGet('en/admin/reports/status', ['external' => TRUE]);
     $this->assertSession()->statusCodeEquals(200);
-    $this->assertSession()->linkByHrefExists('/update.php');
-    $this->assertSession()->linkByHrefNotExists('en/update.php');
+    $this->assertLinkByHref('/update.php');
+    $this->assertNoLinkByHref('en/update.php');
 
     // Click through update.php with 'access administration pages' and
     // 'access site reports' permissions.

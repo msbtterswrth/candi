@@ -22,7 +22,7 @@ class StringFormatterTest extends KernelTestBase {
    *
    * @var array
    */
-  protected static $modules = [
+  public static $modules = [
     'field',
     'text',
     'entity_test',
@@ -61,11 +61,12 @@ class StringFormatterTest extends KernelTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp(): void {
+  protected function setUp() {
     parent::setUp();
 
     // Configure the theme system.
     $this->installConfig(['system', 'field']);
+    \Drupal::service('router.builder')->rebuild();
     $this->installEntitySchema('entity_test_rev');
 
     $this->entityType = 'entity_test_rev';

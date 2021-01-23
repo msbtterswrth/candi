@@ -72,7 +72,7 @@ class EntityAutocomplete extends Textfield {
    */
   public function getInfo() {
     $info = parent::getInfo();
-    $class = static::class;
+    $class = get_class($this);
 
     // Apply default form element properties.
     $info['#target_type'] = NULL;

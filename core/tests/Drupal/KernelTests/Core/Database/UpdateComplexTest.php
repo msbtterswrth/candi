@@ -2,6 +2,8 @@
 
 namespace Drupal\KernelTests\Core\Database;
 
+use Drupal\Core\Database\Query\Condition;
+
 /**
  * Tests the Update query builder, complex queries.
  *
@@ -15,14 +17,14 @@ class UpdateComplexTest extends DatabaseTestBase {
   public function testOrConditionUpdate() {
     $update = $this->connection->update('test')
       ->fields(['job' => 'Musician'])
-      ->condition(($this->connection->condition('OR'))
+      ->condition((new Condition('OR'))
         ->condition('name', 'John')
         ->condition('name', 'Paul')
       );
     $num_updated = $update->execute();
     $this->assertIdentical($num_updated, 2, 'Updated 2 records.');
 
-    $num_matches = $this->connection->query('SELECT COUNT(*) FROM {test} WHERE [job] = :job', [':job' => 'Musician'])->fetchField();
+    $num_matches = $this->connection->query('SELECT COUNT(*) FROM {test} WHERE job = :job', [':job' => 'Musician'])->fetchField();
     $this->assertIdentical($num_matches, '2', 'Updated fields successfully.');
   }
 
@@ -36,7 +38,7 @@ class UpdateComplexTest extends DatabaseTestBase {
       ->execute();
     $this->assertIdentical($num_updated, 2, 'Updated 2 records.');
 
-    $num_matches = $this->connection->query('SELECT COUNT(*) FROM {test} WHERE [job] = :job', [':job' => 'Musician'])->fetchField();
+    $num_matches = $this->connection->query('SELECT COUNT(*) FROM {test} WHERE job = :job', [':job' => 'Musician'])->fetchField();
     $this->assertIdentical($num_matches, '2', 'Updated fields successfully.');
   }
 
@@ -52,7 +54,7 @@ class UpdateComplexTest extends DatabaseTestBase {
       ->execute();
     $this->assertIdentical($num_updated, 1, 'Updated 1 record.');
 
-    $num_matches = $this->connection->query('SELECT COUNT(*) FROM {test} WHERE [job] = :job', [':job' => 'Musician'])->fetchField();
+    $num_matches = $this->connection->query('SELECT COUNT(*) FROM {test} WHERE job = :job', [':job' => 'Musician'])->fetchField();
     $this->assertIdentical($num_matches, '1', 'Updated fields successfully.');
   }
 
@@ -66,7 +68,7 @@ class UpdateComplexTest extends DatabaseTestBase {
       ->execute();
     $this->assertIdentical($num_updated, 2, 'Updated 2 records.');
 
-    $num_matches = $this->connection->query('SELECT COUNT(*) FROM {test} WHERE [job] = :job', [':job' => 'Musician'])->fetchField();
+    $num_matches = $this->connection->query('SELECT COUNT(*) FROM {test} WHERE job = :job', [':job' => 'Musician'])->fetchField();
     $this->assertIdentical($num_matches, '2', 'Updated fields successfully.');
   }
 
@@ -80,7 +82,7 @@ class UpdateComplexTest extends DatabaseTestBase {
       ->execute();
     $this->assertIdentical($num_updated, 1, 'Updated 1 record.');
 
-    $num_matches = $this->connection->query('SELECT COUNT(*) FROM {test} WHERE [job] = :job', [':job' => 'Musician'])->fetchField();
+    $num_matches = $this->connection->query('SELECT COUNT(*) FROM {test} WHERE job = :job', [':job' => 'Musician'])->fetchField();
     $this->assertIdentical($num_matches, '1', 'Updated fields successfully.');
   }
 
@@ -88,7 +90,7 @@ class UpdateComplexTest extends DatabaseTestBase {
    * Tests UPDATE with expression values.
    */
   public function testUpdateExpression() {
-    $before_age = $this->connection->query('SELECT [age] FROM {test} WHERE [name] = :name', [':name' => 'Ringo'])->fetchField();
+    $before_age = $this->connection->query('SELECT age FROM {test} WHERE name = :name', [':name' => 'Ringo'])->fetchField();
     $num_updated = $this->connection->update('test')
       ->condition('name', 'Ringo')
       ->fields(['job' => 'Musician'])
@@ -96,10 +98,10 @@ class UpdateComplexTest extends DatabaseTestBase {
       ->execute();
     $this->assertIdentical($num_updated, 1, 'Updated 1 record.');
 
-    $num_matches = $this->connection->query('SELECT COUNT(*) FROM {test} WHERE [job] = :job', [':job' => 'Musician'])->fetchField();
+    $num_matches = $this->connection->query('SELECT COUNT(*) FROM {test} WHERE job = :job', [':job' => 'Musician'])->fetchField();
     $this->assertIdentical($num_matches, '1', 'Updated fields successfully.');
 
-    $person = $this->connection->query('SELECT * FROM {test} WHERE [name] = :name', [':name' => 'Ringo'])->fetch();
+    $person = $this->connection->query('SELECT * FROM {test} WHERE name = :name', [':name' => 'Ringo'])->fetch();
     $this->assertEqual($person->name, 'Ringo', 'Name set correctly.');
     $this->assertEqual($person->age, $before_age + 4, 'Age set correctly.');
     $this->assertEqual($person->job, 'Musician', 'Job set correctly.');
@@ -109,14 +111,14 @@ class UpdateComplexTest extends DatabaseTestBase {
    * Tests UPDATE with only expression values.
    */
   public function testUpdateOnlyExpression() {
-    $before_age = $this->connection->query('SELECT [age] FROM {test} WHERE [name] = :name', [':name' => 'Ringo'])->fetchField();
+    $before_age = $this->connection->query('SELECT age FROM {test} WHERE name = :name', [':name' => 'Ringo'])->fetchField();
     $num_updated = $this->connection->update('test')
       ->condition('name', 'Ringo')
       ->expression('age', 'age + :age', [':age' => 4])
       ->execute();
     $this->assertIdentical($num_updated, 1, 'Updated 1 record.');
 
-    $after_age = $this->connection->query('SELECT [age] FROM {test} WHERE [name] = :name', [':name' => 'Ringo'])->fetchField();
+    $after_age = $this->connection->query('SELECT age FROM {test} WHERE name = :name', [':name' => 'Ringo'])->fetchField();
     $this->assertEqual($before_age + 4, $after_age, 'Age updated correctly');
   }
 
@@ -134,7 +136,7 @@ class UpdateComplexTest extends DatabaseTestBase {
       ->condition('name', 'Ringo');
     // Save the number of rows that updated for assertion later.
     $num_updated = $query->execute();
-    $after_age = $this->connection->query('SELECT [age] FROM {test} WHERE [name] = :name', [':name' => 'Ringo'])->fetchField();
+    $after_age = $this->connection->query('SELECT age FROM {test} WHERE name = :name', [':name' => 'Ringo'])->fetchField();
     $expected_age = $select->execute()->fetchField();
     $this->assertEqual($after_age, $expected_age);
     $this->assertEqual(1, $num_updated, t('Expected 1 row to be updated in subselect update query.'));

@@ -11,7 +11,7 @@ use Drupal\Tests\BrowserTestBase;
  */
 class ContentTranslationEntityBundleUITest extends BrowserTestBase {
 
-  protected static $modules = [
+  public static $modules = [
     'language',
     'content_translation',
     'node',
@@ -24,7 +24,7 @@ class ContentTranslationEntityBundleUITest extends BrowserTestBase {
    */
   protected $defaultTheme = 'stark';
 
-  protected function setUp(): void {
+  protected function setUp() {
     parent::setUp();
     $user = $this->drupalCreateUser([
       'access administration pages',
@@ -48,7 +48,7 @@ class ContentTranslationEntityBundleUITest extends BrowserTestBase {
     // Make sure add page does not inherit translation configuration from first
     // content type.
     $this->drupalGet('admin/structure/types/add');
-    $this->assertSession()->checkboxNotChecked('edit-language-configuration-content-translation');
+    $this->assertNoFieldChecked('edit-language-configuration-content-translation');
 
     // Create second content type and set content translation.
     $edit = [
@@ -60,7 +60,7 @@ class ContentTranslationEntityBundleUITest extends BrowserTestBase {
 
     // Make sure the settings are saved when creating the content type.
     $this->drupalGet('admin/structure/types/manage/page');
-    $this->assertSession()->checkboxChecked('edit-language-configuration-content-translation');
+    $this->assertFieldChecked('edit-language-configuration-content-translation');
 
   }
 

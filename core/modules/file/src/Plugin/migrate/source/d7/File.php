@@ -2,6 +2,7 @@
 
 namespace Drupal\file\Plugin\migrate\source\d7;
 
+use Drupal\Core\Database\Query\Condition;
 use Drupal\migrate\Row;
 use Drupal\migrate_drupal\Plugin\migrate\source\DrupalSqlBase;
 
@@ -42,7 +43,7 @@ class File extends DrupalSqlBase {
   public function query() {
     $query = $this->select('file_managed', 'f')
       ->fields('f')
-      ->condition('f.uri', 'temporary://%', 'NOT LIKE')
+      ->condition('uri', 'temporary://%', 'NOT LIKE')
       ->orderBy('f.timestamp');
 
     // Filter by scheme(s), if configured.
@@ -57,9 +58,9 @@ class File extends DrupalSqlBase {
       $schemes = array_map([$this->getDatabase(), 'escapeLike'], $schemes);
 
       // Add conditions, uri LIKE 'public://%' OR uri LIKE 'private://%'.
-      $conditions = $this->getDatabase()->condition('OR');
+      $conditions = new Condition('OR');
       foreach ($schemes as $scheme) {
-        $conditions->condition('f.uri', $scheme . '%', 'LIKE');
+        $conditions->condition('uri', $scheme . '%', 'LIKE');
       }
       $query->condition($conditions);
     }
@@ -87,7 +88,7 @@ class File extends DrupalSqlBase {
     // At this point, $path could be an absolute path or a relative path,
     // depending on how the scheme's variable was set. So we need to shear out
     // the source_base_path in order to make them all relative.
-    $path = preg_replace('#' . preg_quote($this->configuration['constants']['source_base_path']) . '#', '', $path, 1);
+    $path = str_replace($this->configuration['constants']['source_base_path'], NULL, $path);
     $row->setSourceProperty('filepath', $path);
     return parent::prepareRow($row);
   }
@@ -112,7 +113,6 @@ class File extends DrupalSqlBase {
    */
   public function getIds() {
     $ids['fid']['type'] = 'integer';
-    $ids['fid']['alias'] = 'f';
     return $ids;
   }
 

@@ -16,7 +16,7 @@ class ContentTranslationStandardFieldsTest extends BrowserTestBase {
    *
    * @var array
    */
-  protected static $modules = [
+  public static $modules = [
     'language',
     'content_translation',
     'node',
@@ -33,7 +33,7 @@ class ContentTranslationStandardFieldsTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp(): void {
+  protected function setUp() {
     parent::setUp();
 
     $admin_user = $this->drupalCreateUser([
@@ -58,18 +58,18 @@ class ContentTranslationStandardFieldsTest extends BrowserTestBase {
     $this->drupalGet($path);
 
     // Check content block fields.
-    $this->assertSession()->checkboxChecked('edit-settings-block-content-basic-fields-body');
+    $this->assertFieldByXPath("//input[@id='edit-settings-block-content-basic-fields-body' and @checked='checked']");
 
     // Check comment fields.
-    $this->assertSession()->checkboxChecked('edit-settings-comment-comment-fields-comment-body');
+    $this->assertFieldByXPath("//input[@id='edit-settings-comment-comment-fields-comment-body' and @checked='checked']");
 
     // Check node fields.
-    $this->assertSession()->checkboxChecked('edit-settings-node-article-fields-comment');
-    $this->assertSession()->checkboxChecked('edit-settings-node-article-fields-field-image');
-    $this->assertSession()->checkboxChecked('edit-settings-node-article-fields-field-tags');
+    $this->assertFieldByXPath("//input[@id='edit-settings-node-article-fields-comment' and @checked='checked']");
+    $this->assertFieldByXPath("//input[@id='edit-settings-node-article-fields-field-image' and @checked='checked']");
+    $this->assertFieldByXPath("//input[@id='edit-settings-node-article-fields-field-tags' and @checked='checked']");
 
     // Check user fields.
-    $this->assertSession()->checkboxChecked('edit-settings-user-user-fields-user-picture');
+    $this->assertFieldByXPath("//input[@id='edit-settings-user-user-fields-user-picture' and @checked='checked']");
   }
 
   /**
@@ -78,7 +78,7 @@ class ContentTranslationStandardFieldsTest extends BrowserTestBase {
   public function testRevisionLogNotTranslatable() {
     $path = 'admin/config/regional/content-language';
     $this->drupalGet($path);
-    $this->assertSession()->fieldNotExists('edit-settings-node-article-fields-revision-log');
+    $this->assertNoFieldByXPath("//input[@id='edit-settings-node-article-fields-revision-log']");
   }
 
 }

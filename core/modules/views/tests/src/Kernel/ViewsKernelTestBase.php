@@ -28,7 +28,7 @@ abstract class ViewsKernelTestBase extends KernelTestBase {
   /**
    * {@inheritdoc}
    */
-  protected static $modules = [
+  public static $modules = [
     'path_alias',
     'system',
     'views',
@@ -48,11 +48,11 @@ abstract class ViewsKernelTestBase extends KernelTestBase {
   protected function setUp($import_test_views = TRUE) {
     parent::setUp();
 
-    $this->installSchema('system', ['sequences']);
+    $this->installSchema('system', ['sequences', 'key_value_expire']);
     $this->setUpFixtures();
 
     if ($import_test_views) {
-      ViewTestData::createTestViews(static::class, ['views_test_config']);
+      ViewTestData::createTestViews(get_class($this), ['views_test_config']);
     }
   }
 

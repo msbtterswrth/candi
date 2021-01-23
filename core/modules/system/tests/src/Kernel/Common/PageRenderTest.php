@@ -16,6 +16,7 @@ class PageRenderTest extends KernelTestBase {
    */
   public function testHookPageAttachmentsExceptions() {
     $this->enableModules(['common_test', 'system']);
+    \Drupal::service('router.builder')->rebuild();
 
     $this->assertPageRenderHookExceptions('common_test', 'hook_page_attachments');
   }
@@ -25,6 +26,7 @@ class PageRenderTest extends KernelTestBase {
    */
   public function testHookPageAlter() {
     $this->enableModules(['common_test', 'system']);
+    \Drupal::service('router.builder')->rebuild();
 
     $this->assertPageRenderHookExceptions('common_test', 'hook_page_attachments_alter');
   }

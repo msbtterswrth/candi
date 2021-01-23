@@ -20,7 +20,7 @@ class DestinationTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected static $modules = ['system_test'];
+  public static $modules = ['system_test'];
 
   /**
    * {@inheritdoc}
@@ -63,7 +63,7 @@ class DestinationTest extends BrowserTestBase {
       [
         'input' => 'javascript:alert(0)',
         'output' => 'javascript:alert(0)',
-        'message' => 'JavaScript URL is allowed because it is treated as an internal URL.',
+        'message' => 'Javascript URL is allowed because it is treated as an internal URL.',
       ],
     ];
     foreach ($test_cases as $test_case) {

@@ -35,7 +35,7 @@ class SeparatorTranslationTest extends KernelTestBase {
   /**
    * {@inheritdoc}
    */
-  protected static $modules = [
+  public static $modules = [
     'datetime',
     'datetime_range',
     'entity_test',
@@ -48,13 +48,13 @@ class SeparatorTranslationTest extends KernelTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp(): void {
+  protected function setUp() {
     parent::setUp();
 
     $this->installEntitySchema('entity_test');
     $this->installEntitySchema('user');
     $this->installConfig(['system']);
-    $this->installSchema('system', ['sequences']);
+    $this->installSchema('system', ['sequences', 'key_value']);
 
     // Add a datetime range field.
     $this->fieldStorage = FieldStorageConfig::create([

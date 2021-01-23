@@ -17,7 +17,7 @@ class CacheabilityMetadataConfigOverrideIntegrationTest extends BrowserTestBase 
   /**
    * {@inheritdoc}
    */
-  protected static $modules = [
+  public static $modules = [
     'block_test',
     'config_override_integration_test',
   ];
@@ -30,7 +30,7 @@ class CacheabilityMetadataConfigOverrideIntegrationTest extends BrowserTestBase 
   /**
    * {@inheritdoc}
    */
-  protected function setUp(): void {
+  protected function setUp() {
     parent::setUp();
 
     // @todo If our block does not contain any content then the cache context
@@ -52,7 +52,7 @@ class CacheabilityMetadataConfigOverrideIntegrationTest extends BrowserTestBase 
 
     // Both the cache context and tag should be present.
     $this->assertCacheContext('config_override_integration_test');
-    $this->assertSession()->responseHeaderContains('X-Drupal-Cache-Tags', 'config_override_integration_test_tag');
+    $this->assertCacheTag('config_override_integration_test_tag');
 
     // Flip the state of the cache context. The block label should now be
     // overridden.
@@ -62,7 +62,7 @@ class CacheabilityMetadataConfigOverrideIntegrationTest extends BrowserTestBase 
 
     // Both the cache context and tag should still be present.
     $this->assertCacheContext('config_override_integration_test');
-    $this->assertSession()->responseHeaderContains('X-Drupal-Cache-Tags', 'config_override_integration_test_tag');
+    $this->assertCacheTag('config_override_integration_test_tag');
   }
 
 }

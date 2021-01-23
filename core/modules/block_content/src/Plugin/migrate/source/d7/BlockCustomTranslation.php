@@ -56,9 +56,7 @@ class BlockCustomTranslation extends DrupalSqlBase {
    * {@inheritdoc}
    */
   public function prepareRow(Row $row) {
-    if (!parent::prepareRow($row)) {
-      return FALSE;
-    }
+    parent::prepareRow($row);
     // Set the i18n string table for use in I18nQueryTrait.
     $this->i18nStringTable = static::I18N_STRING_TABLE;
     // Save the translation for this property.

@@ -55,7 +55,6 @@ class VocabularyTranslation extends DrupalSqlBase {
     // the language.
     $language = $row->getSourceProperty('ltlanguage');
     $row->setSourceProperty('language', $language);
-    return parent::prepareRow($row);
   }
 
   /**

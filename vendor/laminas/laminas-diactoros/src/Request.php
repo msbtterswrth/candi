@@ -6,8 +6,6 @@
  * @license   https://github.com/laminas/laminas-diactoros/blob/master/LICENSE.md New BSD License
  */
 
-declare(strict_types=1);
-
 namespace Laminas\Diactoros;
 
 use Psr\Http\Message\RequestInterface;
@@ -32,9 +30,9 @@ class Request implements RequestInterface
      * @param null|string $method HTTP method for the request, if any.
      * @param string|resource|StreamInterface $body Message body, if any.
      * @param array $headers Headers for the message, if any.
-     * @throws Exception\InvalidArgumentException for any invalid value.
+     * @throws \InvalidArgumentException for any invalid value.
      */
-    public function __construct($uri = null, string $method = null, $body = 'php://temp', array $headers = [])
+    public function __construct($uri = null, $method = null, $body = 'php://temp', array $headers = [])
     {
         $this->initialize($uri, $method, $body, $headers);
     }
@@ -42,7 +40,7 @@ class Request implements RequestInterface
     /**
      * {@inheritdoc}
      */
-    public function getHeaders() : array
+    public function getHeaders()
     {
         $headers = $this->headers;
         if (! $this->hasHeader('host')
@@ -57,7 +55,7 @@ class Request implements RequestInterface
     /**
      * {@inheritdoc}
      */
-    public function getHeader($header) : array
+    public function getHeader($header)
     {
         if (! $this->hasHeader($header)) {
             if (strtolower($header) === 'host'

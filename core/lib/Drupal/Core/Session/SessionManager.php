@@ -257,10 +257,6 @@ class SessionManager extends NativeSessionStorage implements SessionManagerInter
    * {@inheritdoc}
    */
   public function destroy() {
-    if ($this->isCli()) {
-      return;
-    }
-
     session_destroy();
 
     // Unset the session cookies.

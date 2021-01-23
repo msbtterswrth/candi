@@ -28,7 +28,7 @@ class ModuleHandlerTest extends UnitTestCase {
    *
    * @covers ::__construct
    */
-  protected function setUp(): void {
+  protected function setUp() {
     parent::setUp();
     // We can mock the cache handler here, but not the module handler.
     $this->cacheBackend = $this->createMock(CacheBackendInterface::class);
@@ -153,7 +153,7 @@ class ModuleHandlerTest extends UnitTestCase {
   }
 
   /**
-   * Confirm we get back a module from the module list.
+   * Confirm we get back a module from the module list
    *
    * @covers ::getModule
    */

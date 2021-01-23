@@ -16,14 +16,14 @@ class SystemAuthorizeTest extends BrowserTestBase {
    *
    * @var array
    */
-  protected static $modules = ['system_test'];
+  public static $modules = ['system_test'];
 
   /**
    * {@inheritdoc}
    */
   protected $defaultTheme = 'stark';
 
-  protected function setUp(): void {
+  protected function setUp() {
     parent::setUp();
 
     // Create an administrator user.
@@ -48,12 +48,12 @@ class SystemAuthorizeTest extends BrowserTestBase {
   }
 
   /**
-   * Tests the FileTransfer hooks.
+   * Tests the FileTransfer hooks
    */
   public function testFileTransferHooks() {
     $page_title = $this->randomMachineName(16);
     $this->drupalGetAuthorizePHP($page_title);
-    $this->assertSession()->titleEquals("$page_title | Drupal");
+    $this->assertTitle("$page_title | Drupal");
     $this->assertNoText('It appears you have reached this page in error.');
     $this->assertText('To continue, provide your server connection details');
     // Make sure we see the new connection method added by system_test.

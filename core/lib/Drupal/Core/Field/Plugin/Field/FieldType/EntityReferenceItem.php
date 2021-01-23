@@ -390,8 +390,8 @@ class EntityReferenceItem extends FieldItemBase implements OptionsProviderInterf
 
     $form = [
       '#type' => 'container',
-      '#process' => [[static::class, 'fieldSettingsAjaxProcess']],
-      '#element_validate' => [[static::class, 'fieldSettingsFormValidate']],
+      '#process' => [[get_class($this), 'fieldSettingsAjaxProcess']],
+      '#element_validate' => [[get_class($this), 'fieldSettingsFormValidate']],
 
     ];
     $form['handler'] = [
@@ -399,7 +399,7 @@ class EntityReferenceItem extends FieldItemBase implements OptionsProviderInterf
       '#title' => t('Reference type'),
       '#open' => TRUE,
       '#tree' => TRUE,
-      '#process' => [[static::class, 'formProcessMergeParent']],
+      '#process' => [[get_class($this), 'formProcessMergeParent']],
     ];
 
     $form['handler']['handler'] = [
@@ -418,7 +418,7 @@ class EntityReferenceItem extends FieldItemBase implements OptionsProviderInterf
       '#attributes' => [
         'class' => ['js-hide'],
       ],
-      '#submit' => [[static::class, 'settingsAjaxSubmit']],
+      '#submit' => [[get_class($this), 'settingsAjaxSubmit']],
     ];
 
     $form['handler']['handler_settings'] = [
@@ -637,7 +637,7 @@ class EntityReferenceItem extends FieldItemBase implements OptionsProviderInterf
   public static function fieldSettingsAjaxProcessElement(&$element, $main_form) {
     if (!empty($element['#ajax'])) {
       $element['#ajax'] = [
-        'callback' => [static::class, 'settingsAjax'],
+        'callback' => [get_called_class(), 'settingsAjax'],
         'wrapper' => $main_form['#id'],
         'element' => $main_form['#array_parents'],
       ];

@@ -3,7 +3,7 @@
 namespace Drupal\Core\Entity\Query;
 
 /**
- * Defines an interface for aggregated entity queries.
+ * Defines a interface for aggregated entity queries.
  */
 interface QueryAggregateInterface extends QueryInterface {
 

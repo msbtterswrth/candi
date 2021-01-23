@@ -25,7 +25,7 @@ class ValidatorTest extends FileManagedUnitTestBase {
    */
   protected $nonImage;
 
-  protected function setUp(): void {
+  protected function setUp() {
     parent::setUp();
 
     $this->image = File::create();
@@ -97,9 +97,8 @@ class ValidatorTest extends FileManagedUnitTestBase {
       $this->assertCount(0, $errors, 'No errors should be reported when an oversized image can be scaled down.');
 
       $image = $this->container->get('image.factory')->get($this->image->getFileUri());
-      // Verify that the image was scaled to the correct width and height.
-      $this->assertLessThanOrEqual(10, $image->getWidth());
-      $this->assertLessThanOrEqual(5, $image->getHeight());
+      $this->assertTrue($image->getWidth() <= 10, 'Image scaled to correct width.', 'File');
+      $this->assertTrue($image->getHeight() <= 5, 'Image scaled to correct height.', 'File');
 
       // Once again, now with negative width and height to force an error.
       copy('core/misc/druplicon.png', 'temporary://druplicon.png');

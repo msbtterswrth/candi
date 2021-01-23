@@ -16,12 +16,8 @@ abstract class NoMultilingualReviewPageTestBase extends MultilingualReviewPageTe
     $this->prepare();
     // Start the upgrade process.
     $this->drupalGet('/upgrade');
-    $this->submitForm([], 'Continue');
-
-    // Get valid credentials.
-    $edits = $this->translatePostValues($this->getCredentials());
-
-    $this->submitForm($edits, 'Review upgrade');
+    $this->drupalPostForm(NULL, [], t('Continue'));
+    $this->drupalPostForm(NULL, $this->edits, t('Review upgrade'));
 
     $session = $this->assertSession();
     $session->pageTextContains('WARNING: Content may be overwritten on your new site.');
@@ -30,7 +26,7 @@ abstract class NoMultilingualReviewPageTestBase extends MultilingualReviewPageTe
     $session->pageTextContains('There is translated content of these types:');
     $session->pageTextContainsOnce('content items');
 
-    $this->submitForm([], 'I acknowledge I may lose data. Continue anyway.');
+    $this->drupalPostForm(NULL, [], t('I acknowledge I may lose data. Continue anyway.'));
     $session->statusCodeEquals(200);
 
     // Ensure there are no errors about missing modules from the test module.
@@ -41,7 +37,9 @@ abstract class NoMultilingualReviewPageTestBase extends MultilingualReviewPageTe
     $session->pageTextNotContains(t('module not found'));
 
     // Test the upgrade paths.
-    $this->assertReviewForm();
+    $available_paths = $this->getAvailablePaths();
+    $missing_paths = $this->getMissingPaths();
+    $this->assertUpgradePaths($session, $available_paths, $missing_paths);
   }
 
 }

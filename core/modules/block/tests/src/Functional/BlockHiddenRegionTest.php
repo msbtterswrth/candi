@@ -22,14 +22,14 @@ class BlockHiddenRegionTest extends BrowserTestBase {
    *
    * @var array
    */
-  protected static $modules = ['block', 'block_test', 'search'];
+  public static $modules = ['block', 'block_test', 'search'];
 
   /**
    * {@inheritdoc}
    */
   protected $defaultTheme = 'classy';
 
-  protected function setUp(): void {
+  protected function setUp() {
     parent::setUp();
 
     // Create administrative user.
@@ -68,7 +68,7 @@ class BlockHiddenRegionTest extends BrowserTestBase {
 
     // Ensure that "block_test_theme" is set as the default theme.
     $this->drupalGet('admin/structure/block');
-    $this->assertSession()->pageTextContains('Block test theme(active tab)');
+    $this->assertText('Block test theme(' . t('active tab') . ')', 'Default local task on blocks admin page is the block test theme.');
 
     // Ensure that the search form block is displayed.
     $this->drupalGet('');

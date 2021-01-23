@@ -66,7 +66,7 @@ class ViewAjaxControllerTest extends UnitTestCase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp(): void {
+  protected function setUp() {
     $this->viewStorage = $this->createMock('Drupal\Core\Entity\EntityStorageInterface');
     $this->executableFactory = $this->getMockBuilder('Drupal\views\ViewExecutableFactory')
       ->disableOriginalConstructor()
@@ -117,7 +117,7 @@ class ViewAjaxControllerTest extends UnitTestCase {
   }
 
   /**
-   * Tests missing view_name and view_display_id.
+   * Tests missing view_name and view_display_id
    */
   public function testMissingViewName() {
     $request = new Request();
@@ -126,7 +126,7 @@ class ViewAjaxControllerTest extends UnitTestCase {
   }
 
   /**
-   * Tests non-existent view with view_name and view_display_id.
+   * Tests with view_name and view_display_id but not existing view.
    */
   public function testMissingView() {
     $request = new Request();

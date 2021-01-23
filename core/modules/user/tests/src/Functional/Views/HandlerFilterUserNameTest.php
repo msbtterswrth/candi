@@ -19,7 +19,7 @@ class HandlerFilterUserNameTest extends ViewTestBase {
    *
    * @var array
    */
-  protected static $modules = ['views_ui', 'user_test_views'];
+  public static $modules = ['views_ui', 'user_test_views'];
 
   /**
    * {@inheritdoc}
@@ -56,10 +56,10 @@ class HandlerFilterUserNameTest extends ViewTestBase {
     'uid' => 'uid',
   ];
 
-  protected function setUp($import_test_views = TRUE): void {
+  protected function setUp($import_test_views = TRUE) {
     parent::setUp($import_test_views);
 
-    ViewTestData::createTestViews(static::class, ['user_test_views']);
+    ViewTestData::createTestViews(get_class($this), ['user_test_views']);
 
     $this->enableViewsTestModule();
 
@@ -105,7 +105,7 @@ class HandlerFilterUserNameTest extends ViewTestBase {
     $edit = [
       'options[value]' => implode(', ', $users),
     ];
-    $this->drupalPostForm($path, $edit, 'Apply');
+    $this->drupalPostForm($path, $edit, t('Apply'));
     $this->assertRaw(t('There are no entities matching "%value".', ['%value' => implode(', ', $users)]));
 
     // Pass in an invalid username and a valid username.
@@ -116,7 +116,7 @@ class HandlerFilterUserNameTest extends ViewTestBase {
       'options[value]' => implode(', ', $users),
     ];
     $users = [$users[0]];
-    $this->drupalPostForm($path, $edit, 'Apply');
+    $this->drupalPostForm($path, $edit, t('Apply'));
     $this->assertRaw(t('There are no entities matching "%value".', ['%value' => implode(', ', $users)]));
 
     // Pass in just valid usernames.
@@ -125,7 +125,7 @@ class HandlerFilterUserNameTest extends ViewTestBase {
     $edit = [
       'options[value]' => implode(', ', $users),
     ];
-    $this->drupalPostForm($path, $edit, 'Apply');
+    $this->drupalPostForm($path, $edit, t('Apply'));
     $this->assertNoRaw(t('There are no entities matching "%value".', ['%value' => implode(', ', $users)]));
   }
 

@@ -23,7 +23,7 @@ class ViewsModerationStateFilterTest extends ViewTestBase {
   /**
    * {@inheritdoc}
    */
-  protected static $modules = [
+  public static $modules = [
     'node',
     'content_moderation',
     'workflows',
@@ -42,7 +42,7 @@ class ViewsModerationStateFilterTest extends ViewTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp($import_test_views = TRUE): void {
+  protected function setUp($import_test_views = TRUE) {
     parent::setUp(FALSE);
 
     NodeType::create([
@@ -224,7 +224,7 @@ class ViewsModerationStateFilterTest extends ViewTestBase {
   }
 
   /**
-   * Execute a view and assert the expected results.
+   * Execute a view and asssert the expected results.
    *
    * @param \Drupal\views\ViewEntityInterface $view_entity
    *   A view configuration entity.

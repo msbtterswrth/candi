@@ -22,7 +22,7 @@ class EntityQueryRelationshipTest extends EntityKernelTestBase {
    *
    * @var array
    */
-  protected static $modules = ['taxonomy'];
+  public static $modules = ['taxonomy'];
 
   /**
    * Term entities.
@@ -59,7 +59,7 @@ class EntityQueryRelationshipTest extends EntityKernelTestBase {
    */
   protected $queryResults;
 
-  protected function setUp(): void {
+  protected function setUp() {
     parent::setUp();
 
     $this->installEntitySchema('taxonomy_term');
@@ -211,8 +211,7 @@ class EntityQueryRelationshipTest extends EntityKernelTestBase {
    *   A list of indexes in the $this->entities array.
    */
   protected function assertResults($expected) {
-    $expected_count = count($expected);
-    $this->assertCount($expected_count, $this->queryResults);
+    $this->assertEqual(count($this->queryResults), count($expected));
     foreach ($expected as $key) {
       $id = $this->entities[$key]->id();
       $this->assertEqual($this->queryResults[$id], $id);

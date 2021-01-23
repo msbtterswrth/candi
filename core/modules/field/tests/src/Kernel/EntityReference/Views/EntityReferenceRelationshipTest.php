@@ -41,7 +41,7 @@ class EntityReferenceRelationshipTest extends ViewsKernelTestBase {
    *
    * @var array
    */
-  protected static $modules = [
+  public static $modules = [
     'user',
     'field',
     'entity_test',
@@ -59,11 +59,10 @@ class EntityReferenceRelationshipTest extends ViewsKernelTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp($import_test_views = TRUE): void {
+  protected function setUp($import_test_views = TRUE) {
     parent::setUp();
 
     $this->installEntitySchema('user');
-    $this->installEntitySchema('user_role');
     $this->installEntitySchema('entity_test');
     $this->installEntitySchema('entity_test_mul');
     $this->installEntitySchema('entity_test_mul_changed');
@@ -83,7 +82,7 @@ class EntityReferenceRelationshipTest extends ViewsKernelTestBase {
     // Create reference from entity_test_mul to entity_test cardinality: infinite.
     $this->createEntityReferenceField('entity_test_mul', 'entity_test_mul', 'field_data_test_unlimited', 'field_data_test_unlimited', 'entity_test', 'default', [], FieldStorageConfig::CARDINALITY_UNLIMITED);
 
-    ViewTestData::createTestViews(static::class, ['entity_reference_test_views']);
+    ViewTestData::createTestViews(get_class($this), ['entity_reference_test_views']);
   }
 
   /**
@@ -347,20 +346,6 @@ class EntityReferenceRelationshipTest extends ViewsKernelTestBase {
     $this->assertEquals('name1', $fields['name_2']->getValue($view->result[2]));
     // Ensure getValue works on empty references.
     $this->assertNull($fields['name_2']->getValue($view->result[3]));
-  }
-
-  /**
-   * Test that config entities don't get relationships added.
-   */
-  public function testEntityReferenceConfigEntity() {
-    // Create reference from entity_test to a config entity.
-    $this->createEntityReferenceField('entity_test', 'entity_test', 'field_test_config_entity', 'field_test_config_entity', 'user_role');
-    Views::viewsData()->clear();
-    $views_data = Views::viewsData()->getAll();
-    // Test that a relationship got added for content entities but not config
-    // entities.
-    $this->assertTrue(isset($views_data['entity_test__field_test_data']['field_test_data']['relationship']));
-    $this->assertFalse(isset($views_data['entity_test__field_test_config_entity']['field_test_config_entity']['relationship']));
   }
 
 }

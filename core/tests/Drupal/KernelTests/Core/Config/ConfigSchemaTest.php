@@ -25,7 +25,7 @@ class ConfigSchemaTest extends KernelTestBase {
    *
    * @var array
    */
-  protected static $modules = [
+  public static $modules = [
     'system',
     'language',
     'field',
@@ -37,7 +37,7 @@ class ConfigSchemaTest extends KernelTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp(): void {
+  protected function setUp() {
     parent::setUp();
     $this->installConfig(['system', 'image', 'config_schema_test']);
   }
@@ -47,7 +47,7 @@ class ConfigSchemaTest extends KernelTestBase {
    */
   public function testSchemaMapping() {
     // Nonexistent configuration key will have Undefined as metadata.
-    $this->assertFalse(\Drupal::service('config.typed')->hasConfigSchema('config_schema_test.no_such_key'));
+    $this->assertSame(FALSE, \Drupal::service('config.typed')->hasConfigSchema('config_schema_test.no_such_key'));
     $definition = \Drupal::service('config.typed')->getDefinition('config_schema_test.no_such_key');
     $expected = [];
     $expected['label'] = 'Undefined';
@@ -58,12 +58,12 @@ class ConfigSchemaTest extends KernelTestBase {
     $this->assertEqual($definition, $expected, 'Retrieved the right metadata for nonexistent configuration.');
 
     // Configuration file without schema will return Undefined as well.
-    $this->assertFalse(\Drupal::service('config.typed')->hasConfigSchema('config_schema_test.noschema'));
+    $this->assertSame(FALSE, \Drupal::service('config.typed')->hasConfigSchema('config_schema_test.noschema'));
     $definition = \Drupal::service('config.typed')->getDefinition('config_schema_test.noschema');
     $this->assertEqual($definition, $expected, 'Retrieved the right metadata for configuration with no schema.');
 
     // Configuration file with only some schema.
-    $this->assertTrue(\Drupal::service('config.typed')->hasConfigSchema('config_schema_test.someschema'));
+    $this->assertSame(TRUE, \Drupal::service('config.typed')->hasConfigSchema('config_schema_test.someschema'));
     $definition = \Drupal::service('config.typed')->getDefinition('config_schema_test.someschema');
     $expected = [];
     $expected['label'] = 'Schema test data';
@@ -96,7 +96,7 @@ class ConfigSchemaTest extends KernelTestBase {
     $expected['definition_class'] = '\Drupal\Core\TypedData\DataDefinition';
     $expected['unwrap_for_canonical_representation'] = TRUE;
     $this->assertEqual($definition, $expected, 'Automatic type detected for a list is undefined.');
-    $definition = $config->get('test_no_schema')->getDataDefinition()->toArray();
+    $definition = $config->get('testnoschema')->getDataDefinition()->toArray();
     $expected = [];
     $expected['label'] = 'Undefined';
     $expected['class'] = Undefined::class;
@@ -324,9 +324,7 @@ class ConfigSchemaTest extends KernelTestBase {
     // Check nested array of properties.
     $list = $meta->get('page')->getElements();
     $this->assertCount(3, $list, 'Got a list with the right number of properties for site page data');
-    $this->assertArrayHasKey('front', $list);
-    $this->assertArrayHasKey('403', $list);
-    $this->assertArrayHasKey('404', $list);
+    $this->assertTrue(isset($list['front']) && isset($list['403']) && isset($list['404']), 'Got a list with the right properties for site page data.');
     $this->assertEqual($list['front']->getValue(), '/user/login', 'Got the right value for page.front data from the list.');
 
     // And test some TypedConfigInterface methods.
@@ -343,8 +341,7 @@ class ConfigSchemaTest extends KernelTestBase {
     $this->assertCount(1, $effects->toArray(), 'Got an array with effects for image.style.large data');
     $uuid = key($effects->getValue());
     $effect = $effects->get($uuid)->getElements();
-    $this->assertFalse($effect['data']->isEmpty(), 'Got data for the image scale effect from metadata.');
-    $this->assertSame('image_scale', $effect['id']->getValue(), 'Got data for the image scale effect from metadata.');
+    $this->assertTrue(!$effect['data']->isEmpty() && $effect['id']->getValue() == 'image_scale', 'Got data for the image scale effect from metadata.');
     $this->assertInstanceOf(IntegerInterface::class, $effect['data']->get('width'));
     $this->assertEqual($effect['data']->get('width')->getValue(), 480, 'Got the right value for the scale effect width.');
   }
@@ -729,10 +726,10 @@ class ConfigSchemaTest extends KernelTestBase {
     $typed_values = [
       'tests' => [
         [
-          'id' => 'cat:persian.dog',
+          'id' => 'cat:persion.dog',
           'foo' => 'cat',
           'bar' => 'dog',
-          'breed' => 'persian',
+          'breed' => 'persion',
         ],
       ],
     ];

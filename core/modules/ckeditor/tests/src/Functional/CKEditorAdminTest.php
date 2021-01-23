@@ -20,7 +20,7 @@ class CKEditorAdminTest extends BrowserTestBase {
    *
    * @var array
    */
-  protected static $modules = ['filter', 'editor', 'ckeditor'];
+  public static $modules = ['filter', 'editor', 'ckeditor'];
 
   /**
    * {@inheritdoc}
@@ -34,7 +34,7 @@ class CKEditorAdminTest extends BrowserTestBase {
    */
   protected $adminUser;
 
-  protected function setUp(): void {
+  protected function setUp() {
     parent::setUp();
 
     // Create text format.
@@ -78,7 +78,7 @@ class CKEditorAdminTest extends BrowserTestBase {
     $edit = [
       'editor[editor]' => 'ckeditor',
     ];
-    $this->submitForm($edit, 'Save configuration');
+    $this->drupalPostForm(NULL, $edit, t('Save configuration'));
     $this->assertRaw(t('You must configure the selected text editor.'));
 
     // Ensure the CKEditor editor returns the expected default settings.
@@ -112,10 +112,10 @@ class CKEditorAdminTest extends BrowserTestBase {
       ],
       'plugins' => ['language' => ['language_list' => 'un']],
     ];
-    $this->assertEquals($expected_default_settings, $ckeditor->getDefaultSettings());
+    $this->assertIdentical($this->castSafeStrings($ckeditor->getDefaultSettings()), $expected_default_settings);
 
     // Keep the "CKEditor" editor selected and click the "Configure" button.
-    $this->submitForm($edit, 'editor_configure');
+    $this->drupalPostForm(NULL, $edit, 'editor_configure');
     $editor = Editor::load('filtered_html');
     $this->assertNull($editor, 'No Editor config entity exists yet.');
 
@@ -136,15 +136,15 @@ class CKEditorAdminTest extends BrowserTestBase {
     // Ensure the toolbar buttons configuration value is initialized to the
     // expected default value.
     $expected_buttons_value = json_encode($expected_default_settings['toolbar']['rows']);
-    $this->assertSession()->fieldValueEquals('editor[settings][toolbar][button_groups]', $expected_buttons_value);
+    $this->assertFieldByName('editor[settings][toolbar][button_groups]', $expected_buttons_value);
 
     // Ensure the styles textarea exists and is initialized empty.
     $styles_textarea = $this->xpath('//textarea[@name="editor[settings][plugins][stylescombo][styles]"]');
-    $this->assertSession()->fieldValueEquals('editor[settings][plugins][stylescombo][styles]', '');
+    $this->assertFieldByXPath('//textarea[@name="editor[settings][plugins][stylescombo][styles]"]', '', 'The styles textarea exists and is empty.');
     $this->assertCount(1, $styles_textarea, 'The "styles" textarea exists.');
 
     // Submit the form to save the selection of CKEditor as the chosen editor.
-    $this->submitForm($edit, 'Save configuration');
+    $this->drupalPostForm(NULL, $edit, t('Save configuration'));
 
     // Ensure an Editor object exists now, with the proper settings.
     $expected_settings = $expected_default_settings;
@@ -158,7 +158,7 @@ class CKEditorAdminTest extends BrowserTestBase {
     $edit = [
       'editor[settings][plugins][stylescombo][styles]' => "h1.title|Title\np.callout|Callout\n\n",
     ];
-    $this->submitForm($edit, 'Save configuration');
+    $this->drupalPostForm(NULL, $edit, t('Save configuration'));
     $expected_settings['plugins']['stylescombo']['styles'] = "h1.title|Title\np.callout|Callout\n\n";
     $editor = Editor::load('filtered_html');
     $this->assertInstanceOf(Editor::class, $editor);
@@ -175,7 +175,7 @@ class CKEditorAdminTest extends BrowserTestBase {
     $edit = [
       'editor[settings][toolbar][button_groups]' => json_encode($expected_settings['toolbar']['rows']),
     ];
-    $this->submitForm($edit, 'Save configuration');
+    $this->drupalPostForm(NULL, $edit, t('Save configuration'));
     $editor = Editor::load('filtered_html');
     $this->assertInstanceOf(Editor::class, $editor);
     $this->assertEqual($expected_settings, $editor->getSettings(), 'The Editor config entity has the correct settings.');
@@ -213,7 +213,7 @@ class CKEditorAdminTest extends BrowserTestBase {
     $edit = [
       'editor[settings][plugins][llama_contextual_and_button][ultra_llama_mode]' => '1',
     ];
-    $this->submitForm($edit, 'Save configuration');
+    $this->drupalPostForm(NULL, $edit, t('Save configuration'));
     $this->drupalGet('admin/config/content/formats/manage/filtered_html');
     $ultra_llama_mode_checkbox = $this->xpath('//input[@type="checkbox" and @name="editor[settings][plugins][llama_contextual_and_button][ultra_llama_mode]" and @checked="checked"]');
     $this->assertCount(1, $ultra_llama_mode_checkbox, 'The "Ultra llama mode" checkbox exists and is checked.');
@@ -264,7 +264,7 @@ class CKEditorAdminTest extends BrowserTestBase {
       'format' => 'amazing_format',
       'editor[editor]' => 'ckeditor',
     ];
-    $this->submitForm($edit, 'editor_configure');
+    $this->drupalPostForm(NULL, $edit, 'editor_configure');
     $filter_format = FilterFormat::load('amazing_format');
     $this->assertNull($filter_format, 'No FilterFormat config entity exists yet.');
     $editor = Editor::load('amazing_format');
@@ -275,7 +275,7 @@ class CKEditorAdminTest extends BrowserTestBase {
     $ckeditor = $this->container->get('plugin.manager.editor')->createInstance('ckeditor');
     $default_settings = $ckeditor->getDefaultSettings();
     $expected_buttons_value = json_encode($default_settings['toolbar']['rows']);
-    $this->assertSession()->fieldValueEquals('editor[settings][toolbar][button_groups]', $expected_buttons_value);
+    $this->assertFieldByName('editor[settings][toolbar][button_groups]', $expected_buttons_value);
 
     // Regression test for https://www.drupal.org/node/2606460.
     $settings = $this->getDrupalSettings();
@@ -284,12 +284,12 @@ class CKEditorAdminTest extends BrowserTestBase {
 
     // Ensure the styles textarea exists and is initialized empty.
     $styles_textarea = $this->xpath('//textarea[@name="editor[settings][plugins][stylescombo][styles]"]');
-    $this->assertSession()->fieldValueEquals('editor[settings][plugins][stylescombo][styles]', '');
+    $this->assertFieldByXPath('//textarea[@name="editor[settings][plugins][stylescombo][styles]"]', '', 'The styles textarea exists and is empty.');
     $this->assertCount(1, $styles_textarea, 'The "styles" textarea exists.');
 
     // Submit the form to create both a new text format and an associated text
     // editor.
-    $this->submitForm($edit, 'Save configuration');
+    $this->drupalPostForm(NULL, $edit, t('Save configuration'));
 
     // Ensure a FilterFormat object exists now.
     $filter_format = FilterFormat::load('amazing_format');
@@ -300,7 +300,7 @@ class CKEditorAdminTest extends BrowserTestBase {
     $expected_settings['plugins']['stylescombo']['styles'] = '';
     $editor = Editor::load('amazing_format');
     $this->assertInstanceOf(Editor::class, $editor);
-    $this->assertEquals($expected_settings, $editor->getSettings(), 'The Editor config entity has the correct settings.');
+    $this->assertEqual($this->castSafeStrings($expected_settings), $this->castSafeStrings($editor->getSettings()), 'The Editor config entity has the correct settings.');
   }
 
 }

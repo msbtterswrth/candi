@@ -17,7 +17,7 @@ class LanguageConfigOverrideImportTest extends BrowserTestBase {
    *
    * @var array
    */
-  protected static $modules = [
+  public static $modules = [
     'language',
     'config',
     'locale',
@@ -54,6 +54,7 @@ class LanguageConfigOverrideImportTest extends BrowserTestBase {
 
     $this->configImporter()->import();
     $this->rebuildContainer();
+    \Drupal::service('router.builder')->rebuild();
 
     $override = \Drupal::languageManager()->getLanguageConfigOverride('fr', 'system.site');
     $this->assertEqual('FR default site name', $override->get('name'));
@@ -87,6 +88,7 @@ class LanguageConfigOverrideImportTest extends BrowserTestBase {
 
     $this->configImporter()->import();
     $this->rebuildContainer();
+    \Drupal::service('router.builder')->rebuild();
 
     // Test that no config save event has been fired during the import because
     // language configuration overrides do not fire events.

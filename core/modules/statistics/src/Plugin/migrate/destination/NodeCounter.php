@@ -68,7 +68,7 @@ class NodeCounter extends DestinationBase implements ContainerFactoryPluginInter
   /**
    * {@inheritdoc}
    */
-  public function fields() {
+  public function fields(MigrationInterface $migration = NULL) {
     return [
       'nid' => $this->t('The ID of the node to which these statistics apply.'),
       'totalcount' => $this->t('The total number of times the node has been viewed.'),

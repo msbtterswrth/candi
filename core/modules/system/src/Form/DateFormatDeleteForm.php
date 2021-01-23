@@ -21,7 +21,7 @@ class DateFormatDeleteForm extends EntityDeleteForm {
   protected $dateFormatter;
 
   /**
-   * Constructs a DateFormatDeleteForm object.
+   * Constructs an DateFormatDeleteForm object.
    *
    * @param \Drupal\Core\Datetime\DateFormatterInterface $date_formatter
    *   The date formatter service.

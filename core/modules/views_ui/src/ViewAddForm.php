@@ -123,7 +123,6 @@ class ViewAddForm extends ViewFormBase {
       '#type' => 'select',
       '#title' => $this->t('Show'),
       '#options' => $options,
-      '#sort_options' => TRUE,
     ];
     $show_form = &$form['displays']['show'];
     $default_value = \Drupal::moduleHandler()->moduleExists('node') ? 'node' : 'users';

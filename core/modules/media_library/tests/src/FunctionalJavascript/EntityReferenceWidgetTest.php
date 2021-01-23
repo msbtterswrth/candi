@@ -24,7 +24,7 @@ class EntityReferenceWidgetTest extends MediaLibraryTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp(): void {
+  protected function setUp() {
     parent::setUp();
 
     // Create a few example media items for use in selection.
@@ -223,10 +223,11 @@ class EntityReferenceWidgetTest extends MediaLibraryTestBase {
     // Assert the focus is set back on the open button of the media field.
     $this->assertJsCondition('jQuery("#field_twin_media-media-library-wrapper .js-media-library-open-button").is(":focus")');
 
-    // The toggle for weight inputs' visibility should not be available when the
-    // field contains a single item.
+    // Assert that we can toggle the visibility of the weight inputs.
     $wrapper = $assert_session->elementExists('css', '.field--name-field-twin-media');
-    $assert_session->elementNotExists('named', ['button', 'Show media item weights'], $wrapper);
+    $wrapper->pressButton('Show media item weights');
+    $assert_session->fieldExists('Weight', $wrapper)->click();
+    $wrapper->pressButton('Hide media item weights');
 
     // Remove the selected item.
     $button = $assert_session->buttonExists('Remove', $wrapper);
@@ -243,14 +244,6 @@ class EntityReferenceWidgetTest extends MediaLibraryTestBase {
     $this->openMediaLibraryForField('field_twin_media');
     $page->checkField('Select Dog');
     $this->pressInsertSelected('Added one media item.');
-    // Assert that we can toggle the visibility of the weight inputs when the
-    // field contains more than one item.
-    $wrapper = $assert_session->elementExists('css', '.field--name-field-twin-media');
-    $wrapper->pressButton('Show media item weights');
-    // Ensure that the styling doesn't accidentally render the weight field
-    // unusable.
-    $assert_session->fieldExists('Weight', $wrapper)->click();
-    $wrapper->pressButton('Hide media item weights');
 
     // Assert the same has been added twice and remove the items again.
     $this->waitForElementsCount('css', '.field--name-field-twin-media [data-media-library-item-delta]', 2);

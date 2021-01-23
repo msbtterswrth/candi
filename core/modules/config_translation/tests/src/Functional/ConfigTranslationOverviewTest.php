@@ -21,7 +21,7 @@ class ConfigTranslationOverviewTest extends BrowserTestBase {
    *
    * @var array
    */
-  protected static $modules = [
+  public static $modules = [
     'block',
     'config_test',
     'config_translation',
@@ -54,7 +54,7 @@ class ConfigTranslationOverviewTest extends BrowserTestBase {
    */
   protected $localeStorage;
 
-  protected function setUp(): void {
+  protected function setUp() {
     parent::setUp();
     $permissions = [
       'translate configuration',
@@ -82,8 +82,8 @@ class ConfigTranslationOverviewTest extends BrowserTestBase {
    */
   public function testMapperListPage() {
     $this->drupalGet('admin/config/regional/config-translation');
-    $this->assertSession()->linkByHrefExists('admin/config/regional/config-translation/config_test');
-    $this->assertSession()->linkByHrefExists('admin/config/people/accounts/translate');
+    $this->assertLinkByHref('admin/config/regional/config-translation/config_test');
+    $this->assertLinkByHref('admin/config/people/accounts/translate');
     // Make sure there is only a single operation for each dropbutton, either
     // 'List' or 'Translate'.
     foreach ($this->cssSelect('ul.dropbutton') as $i => $dropbutton) {
@@ -107,8 +107,8 @@ class ConfigTranslationOverviewTest extends BrowserTestBase {
 
       $base_url = 'admin/structure/config_test/manage/' . $test_entity->id();
       $this->drupalGet('admin/config/regional/config-translation/config_test');
-      $this->assertSession()->linkByHrefExists($base_url . '/translate');
-      $this->assertSession()->assertEscaped($test_entity->label());
+      $this->assertLinkByHref($base_url . '/translate');
+      $this->assertEscaped($test_entity->label());
 
       // Make sure there is only a single 'Translate' operation for each
       // dropbutton.
@@ -123,10 +123,10 @@ class ConfigTranslationOverviewTest extends BrowserTestBase {
       $title = $test_entity->label() . ' ' . $entity_type->getSingularLabel();
       $title = 'Translations for <em class="placeholder">' . Html::escape($title) . '</em>';
       $this->assertRaw($title);
-      $this->assertSession()->responseContains('<th>Language</th>');
+      $this->assertRaw('<th>' . t('Language') . '</th>');
 
       $this->drupalGet($base_url);
-      $this->assertSession()->linkExists('Translate test configuration');
+      $this->assertSession()->linkExists(t('Translate @title', ['@title' => $entity_type->getSingularLabel()]));
     }
   }
 
@@ -138,17 +138,17 @@ class ConfigTranslationOverviewTest extends BrowserTestBase {
     // configuration translation listings.
     $this->drupalGet('admin/config/regional/config-translation/configurable_language');
     $this->assertText('Not applicable');
-    $this->assertSession()->linkByHrefExists('admin/config/regional/language/edit/zxx/translate');
+    $this->assertLinkByHref('admin/config/regional/language/edit/zxx/translate');
     $this->assertText('Not specified');
-    $this->assertSession()->linkByHrefExists('admin/config/regional/language/edit/und/translate');
+    $this->assertLinkByHref('admin/config/regional/language/edit/und/translate');
 
     // Hidden date formats are only available to translate through the
     // configuration translation listings. Test a couple of them.
     $this->drupalGet('admin/config/regional/config-translation/date_format');
     $this->assertText('HTML Date');
-    $this->assertSession()->linkByHrefExists('admin/config/regional/date-time/formats/manage/html_date/translate');
+    $this->assertLinkByHref('admin/config/regional/date-time/formats/manage/html_date/translate');
     $this->assertText('HTML Year');
-    $this->assertSession()->linkByHrefExists('admin/config/regional/date-time/formats/manage/html_year/translate');
+    $this->assertLinkByHref('admin/config/regional/date-time/formats/manage/html_year/translate');
   }
 
   /**
@@ -200,7 +200,7 @@ class ConfigTranslationOverviewTest extends BrowserTestBase {
     $this->drupalGet('admin/config/regional/config-translation/node_fields');
     $this->assertText('Body');
     $this->assertText('Basic');
-    $this->assertSession()->linkByHrefExists('admin/structure/types/manage/basic/fields/node.basic.body/translate');
+    $this->assertLinkByHref('admin/structure/types/manage/basic/fields/node.basic.body/translate');
   }
 
 }

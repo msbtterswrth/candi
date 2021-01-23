@@ -34,7 +34,7 @@ class CommentAdminViewTest extends ViewsKernelTestBase {
   /**
    * {@inheritdoc}
    */
-  protected static $modules = [
+  public static $modules = [
     'user',
     'comment',
     'entity_test',
@@ -45,7 +45,7 @@ class CommentAdminViewTest extends ViewsKernelTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp($import_test_views = TRUE): void {
+  protected function setUp($import_test_views = TRUE) {
     parent::setUp($import_test_views);
 
     $this->installEntitySchema('user');
@@ -53,11 +53,6 @@ class CommentAdminViewTest extends ViewsKernelTestBase {
     $this->installEntitySchema('entity_test');
     // Create the anonymous role.
     $this->installConfig(['user']);
-
-    // Create user 1 so that the user created later in the test has a different
-    // user ID.
-    // @todo Remove in https://www.drupal.org/node/540008.
-    User::create(['uid' => 1, 'name' => 'user1'])->save();
 
     // Enable another language.
     ConfigurableLanguage::createFromLangcode('ur')->save();
@@ -77,7 +72,7 @@ class CommentAdminViewTest extends ViewsKernelTestBase {
     // Created admin role.
     $admin_role = Role::create([
       'id' => 'admin',
-      'permissions' => ['administer comments', 'skip comment approval'],
+      'permissions' => ['administer comments'],
     ]);
     $admin_role->save();
     // Create the admin user.

@@ -43,12 +43,12 @@ class FrontPageTest extends ViewTestBase {
    *
    * @var array
    */
-  protected static $modules = ['node', 'contextual'];
+  public static $modules = ['node', 'contextual'];
 
   /**
    * {@inheritdoc}
    */
-  protected function setUp($import_test_views = TRUE): void {
+  protected function setUp($import_test_views = TRUE) {
     parent::setUp($import_test_views);
 
     $this->nodeStorage = $this->container->get('entity_type.manager')
@@ -187,7 +187,7 @@ class FrontPageTest extends ViewTestBase {
     $this->drupalGet('node');
     $this->assertSession()->statusCodeEquals(200);
     // Check that the frontpage view was rendered.
-    $this->assertSession()->responseMatches('/class=".+view-frontpage/');
+    $this->assertPattern('/class=".+view-frontpage/');
   }
 
   /**

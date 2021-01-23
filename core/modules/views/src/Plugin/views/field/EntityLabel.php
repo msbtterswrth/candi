@@ -33,7 +33,7 @@ class EntityLabel extends FieldPluginBase {
   protected $entityTypeManager;
 
   /**
-   * Constructs an EntityLabel object.
+   * Constructs a EntityLabel object.
    *
    * @param array $configuration
    *   A configuration array containing information about the plugin instance.

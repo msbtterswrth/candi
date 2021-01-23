@@ -19,7 +19,7 @@ class EntityResolverTest extends NormalizerTestBase {
    *
    * @var array
    */
-  protected static $modules = ['hal', 'rest'];
+  public static $modules = ['hal', 'rest'];
 
   /**
    * The format being tested.
@@ -28,8 +28,10 @@ class EntityResolverTest extends NormalizerTestBase {
    */
   protected $format = 'hal_json';
 
-  protected function setUp(): void {
+  protected function setUp() {
     parent::setUp();
+
+    \Drupal::service('router.builder')->rebuild();
 
     // Create the test field storage.
     FieldStorageConfig::create([

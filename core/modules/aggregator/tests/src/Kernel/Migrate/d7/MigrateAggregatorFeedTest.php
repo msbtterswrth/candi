@@ -15,12 +15,12 @@ class MigrateAggregatorFeedTest extends MigrateDrupal7TestBase {
   /**
    * {@inheritdoc}
    */
-  protected static $modules = ['aggregator'];
+  public static $modules = ['aggregator'];
 
   /**
    * {@inheritdoc}
    */
-  protected function setUp(): void {
+  protected function setUp() {
     parent::setUp();
     $this->installEntitySchema('aggregator_feed');
     $this->executeMigration('d7_aggregator_feed');
@@ -40,7 +40,7 @@ class MigrateAggregatorFeedTest extends MigrateDrupal7TestBase {
     // assert that its format is correct.
     $checked_time = $feed->getLastCheckedTime();
     $this->assertIsNumeric($checked_time);
-    $this->assertGreaterThan(1000000000, $checked_time);
+    $this->assertTrue($checked_time > 1000000000);
     $this->assertIdentical('0', $feed->getQueuedTime());
     $this->assertIdentical('http://knowyourmeme.com', $feed->link->value);
     $this->assertIdentical('New items added to the News Feed', $feed->getDescription());

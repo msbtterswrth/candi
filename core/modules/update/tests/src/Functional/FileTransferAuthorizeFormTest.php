@@ -14,14 +14,14 @@ class FileTransferAuthorizeFormTest extends UpdateTestBase {
    *
    * @var array
    */
-  protected static $modules = ['update', 'update_test'];
+  public static $modules = ['update', 'update_test'];
 
   /**
    * {@inheritdoc}
    */
   protected $defaultTheme = 'stark';
 
-  protected function setUp(): void {
+  protected function setUp() {
     parent::setUp();
     $admin_user = $this->drupalCreateUser([
       'administer modules',
@@ -57,13 +57,13 @@ class FileTransferAuthorizeFormTest extends UpdateTestBase {
     $edit = [
       'project_url' => $url,
     ];
-    $this->drupalPostForm('admin/modules/install', $edit, 'Install');
+    $this->drupalPostForm('admin/modules/install', $edit, t('Install'));
     $edit = [
       'connection_settings[authorize_filetransfer_default]' => 'system_test',
       'connection_settings[system_test][update_test_username]' => $this->randomMachineName(),
     ];
-    $this->submitForm($edit, 'Continue');
-    $this->assertText('Installation was completed successfully.');
+    $this->drupalPostForm(NULL, $edit, t('Continue'));
+    $this->assertText(t('Installation was completed successfully.'));
 
     // Ensure the module is available to install.
     $this->drupalGet('admin/modules');

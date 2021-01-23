@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\language\Functional;
 
+use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Tests\BrowserTestBase;
 
 /**
@@ -10,10 +11,12 @@ use Drupal\Tests\BrowserTestBase;
  */
 class LanguageNegotiationUrlTest extends BrowserTestBase {
 
+  use StringTranslationTrait;
+
   /**
    * {@inheritdoc}
    */
-  protected static $modules = [
+  public static $modules = [
     'language',
     'node',
     'path',
@@ -32,7 +35,7 @@ class LanguageNegotiationUrlTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp(): void {
+  protected function setUp() {
     parent::setUp();
 
     // Create an Article node type.
@@ -50,7 +53,7 @@ class LanguageNegotiationUrlTest extends BrowserTestBase {
     ]);
     $this->drupalLogin($this->user);
 
-    $this->drupalPostForm('admin/config/regional/language/add', ['predefined_langcode' => 'de'], 'Add language');
+    $this->drupalPostForm('admin/config/regional/language/add', ['predefined_langcode' => 'de'], $this->t('Add language'));
   }
 
   /**
@@ -66,13 +69,13 @@ class LanguageNegotiationUrlTest extends BrowserTestBase {
       'domain[en]' => $_SERVER['HTTP_HOST'],
       'domain[de]' => "de.$_SERVER[HTTP_HOST]",
     ];
-    $this->drupalPostForm('admin/config/regional/language/detection/url', $edit, 'Save configuration');
+    $this->drupalPostForm('admin/config/regional/language/detection/url', $edit, $this->t('Save configuration'));
 
     $nodeValues = [
       'title[0][value]' => 'Test',
       'path[0][alias]' => '/eng/test',
     ];
-    $this->drupalPostForm('node/add/article', $nodeValues, 'Save');
+    $this->drupalPostForm('node/add/article', $nodeValues, $this->t('Save'));
     $this->assertSession()->statusCodeEquals(200);
   }
 

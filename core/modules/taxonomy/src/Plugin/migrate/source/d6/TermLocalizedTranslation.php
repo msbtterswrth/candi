@@ -78,7 +78,7 @@ class TermLocalizedTranslation extends Term {
       $row->setSourceProperty($other_property . '_translated', NULL);
     }
 
-    return parent::prepareRow($row);
+    parent::prepareRow($row);
   }
 
   /**

@@ -13,7 +13,7 @@ use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
 
 /**
- * Configuration entity that contains widget options for all components of an
+ * Configuration entity that contains widget options for all components of a
  * entity form in a given form mode.
  *
  * @ConfigEntityType(

@@ -28,7 +28,7 @@ class EntityDisplayTest extends KernelTestBase {
    *
    * @var string[]
    */
-  protected static $modules = [
+  public static $modules = [
     'field_ui',
     'field',
     'entity_test',
@@ -39,7 +39,7 @@ class EntityDisplayTest extends KernelTestBase {
     'system',
   ];
 
-  protected function setUp(): void {
+  protected function setUp() {
     parent::setUp();
     $this->installEntitySchema('entity_test');
     $this->installEntitySchema('node');
@@ -124,7 +124,7 @@ class EntityDisplayTest extends KernelTestBase {
   }
 
   /**
-   * Test sorting of components by name on basic CRUD operations.
+   * Test sorting of components by name on basic CRUD operations
    */
   public function testEntityDisplayCRUDSort() {
     $display = EntityViewDisplay::create([
@@ -694,7 +694,7 @@ class EntityDisplayTest extends KernelTestBase {
    *   The entity display object to get dependencies from.
    *
    * @return bool
-   *   TRUE if the assertion succeeded.
+   *   TRUE if the assertion succeeded, FALSE otherwise.
    */
   protected function assertDependencyHelper($assertion, $type, $key, EntityDisplayInterface $display) {
     $all_dependencies = $display->getDependencies();
@@ -703,8 +703,7 @@ class EntityDisplayTest extends KernelTestBase {
     $value = $assertion ? in_array($key, $dependencies) : !in_array($key, $dependencies);
     $args = ['@context' => $context, '@id' => $display->id(), '@type' => $type, '@key' => $key];
     $message = $assertion ? new FormattableMarkup("@context display '@id' depends on @type '@key'.", $args) : new FormattableMarkup("@context display '@id' do not depend on @type '@key'.", $args);
-    $this->assertTrue($value, $message);
-    return TRUE;
+    return $this->assert($value, $message);
   }
 
 }

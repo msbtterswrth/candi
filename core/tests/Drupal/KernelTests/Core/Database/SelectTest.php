@@ -319,8 +319,8 @@ class SelectTest extends DatabaseTestBase {
 
     // Ensure we only get 2 records.
     $this->assertCount(2, $names, 'UNION correctly discarded duplicates.');
-
-    $this->assertEqualsCanonicalizing(['George', 'Ringo'], $names);
+    sort($names);
+    $this->assertEquals(['George', 'Ringo'], $names);
   }
 
   /**
@@ -361,10 +361,12 @@ class SelectTest extends DatabaseTestBase {
 
     $query_1->union($query_2, 'ALL');
     $names = $query_1->execute()->fetchCol();
-    $count = (int) $query_1->countQuery()->execute()->fetchField();
+
+    $query_3 = $query_1->countQuery();
+    $count = $query_3->execute()->fetchField();
 
     // Ensure the counts match.
-    $this->assertSame(count($names), $count, "The count query's result matched the number of rows in the UNION query.");
+    $this->assertEqual(count($names), $count, "The count query's result matched the number of rows in the UNION query.");
   }
 
   /**
@@ -445,7 +447,7 @@ class SelectTest extends DatabaseTestBase {
     // same as the chance that a deck of cards will come out in the same order
     // after shuffling it (in other words, nearly impossible).
     $number_of_items = 52;
-    while ($this->connection->query("SELECT MAX([id]) FROM {test}")->fetchField() < $number_of_items) {
+    while ($this->connection->query("SELECT MAX(id) FROM {test}")->fetchField() < $number_of_items) {
       $this->connection->insert('test')->fields(['name' => $this->randomMachineName()])->execute();
     }
 

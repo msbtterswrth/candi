@@ -1,4 +1,3 @@
-# cspell:ignore imagefield optionwidgets userreference
 id: d6_field_instance_option_translation
 label: Field instance option configuration translation
 migration_tags:

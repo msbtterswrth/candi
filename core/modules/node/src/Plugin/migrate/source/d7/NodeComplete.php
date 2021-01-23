@@ -67,7 +67,7 @@ class NodeComplete extends NodeRevision {
       $row->setSourceProperty('revision_uid', $row->getSourceProperty('etr_uid'));
       $row->setSourceProperty('source_langcode', $row->getSourceProperty('source'));
     }
-    return parent::prepareRow($row);
+    parent::prepareRow($row);
   }
 
   /**

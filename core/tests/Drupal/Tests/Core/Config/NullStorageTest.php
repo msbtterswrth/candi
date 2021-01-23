@@ -22,7 +22,7 @@ class NullStorageTest extends UnitTestCase {
     $this->assertInstanceOf(StorageInterface::class, $collection);
     $this->assertEquals(StorageInterface::DEFAULT_COLLECTION, $nullStorage->getCollectionName());
     $this->assertEquals('test', $collection->getCollectionName());
-    $this->assertSame([], $collection->getAllCollectionNames());
+    $this->assertArrayEquals([], $collection->getAllCollectionNames());
   }
 
 }

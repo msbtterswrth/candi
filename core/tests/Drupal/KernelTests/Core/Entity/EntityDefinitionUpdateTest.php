@@ -4,6 +4,7 @@ namespace Drupal\KernelTests\Core\Entity;
 
 use Drupal\Component\Plugin\Exception\PluginNotFoundException;
 use Drupal\Core\Database\Database;
+use Drupal\Core\Database\DatabaseExceptionWrapper;
 use Drupal\Core\Database\IntegrityConstraintViolationException;
 use Drupal\Core\Entity\ContentEntityType;
 use Drupal\Core\Entity\EntityStorageException;
@@ -56,12 +57,12 @@ class EntityDefinitionUpdateTest extends EntityKernelTestBase {
    *
    * @var array
    */
-  protected static $modules = ['entity_test_update', 'language'];
+  public static $modules = ['entity_test_update', 'language'];
 
   /**
    * {@inheritdoc}
    */
-  protected function setUp(): void {
+  protected function setUp() {
     parent::setUp();
     $this->entityDefinitionUpdateManager = $this->container->get('entity.definition_update_manager');
     $this->entityFieldManager = $this->container->get('entity_field.manager');
@@ -307,7 +308,7 @@ class EntityDefinitionUpdateTest extends EntityKernelTestBase {
   }
 
   /**
-   * Tests creating, updating, and deleting a base field with no label set.
+   * Tests creating, updating, and deleting a base field with no label set
    *
    * See testBaseFieldCreateUpdateDeleteWithoutData() for more details
    */
@@ -375,7 +376,7 @@ class EntityDefinitionUpdateTest extends EntityKernelTestBase {
   /**
    * Tests creating and deleting a base field if entities exist.
    *
-   * This tests deletion when there are existing entities, but non-existent data
+   * This tests deletion when there are existing entities, but not existing data
    * for the field being deleted.
    *
    * @see testBaseFieldDeleteWithExistingData()
@@ -418,8 +419,8 @@ class EntityDefinitionUpdateTest extends EntityKernelTestBase {
     $entity->delete();
     $this->removeBaseField();
     $this->applyEntityUpdates();
-    $this->assertFalse($schema_handler->fieldExists('entity_test_update', 'new_base_field__shape'), 'Shape column should be removed from the shared table for new_base_field.');
-    $this->assertFalse($schema_handler->fieldExists('entity_test_update', 'new_base_field__color'), 'Color column should be removed from the shared table for new_base_field.');
+    $assert = !$schema_handler->fieldExists('entity_test_update', 'new_base_field__shape') && !$schema_handler->fieldExists('entity_test_update', 'new_base_field__color');
+    $this->assert($assert, 'Columns removed from the shared table for new_base_field.');
     $this->addBaseField('shape_required');
     $this->applyEntityUpdates();
     $assert = $schema_handler->fieldExists('entity_test_update', 'new_base_field__shape') && $schema_handler->fieldExists('entity_test_update', 'new_base_field__color');
@@ -431,7 +432,7 @@ class EntityDefinitionUpdateTest extends EntityKernelTestBase {
   /**
    * Tests creating and deleting a bundle field if entities exist.
    *
-   * This tests deletion when there are existing entities, but non-existent data
+   * This tests deletion when there are existing entities, but not existing data
    * for the field being deleted.
    *
    * @see testBundleFieldDeleteWithExistingData()
@@ -481,13 +482,19 @@ class EntityDefinitionUpdateTest extends EntityKernelTestBase {
         ->execute();
       $this->fail($message);
     }
-    catch (IntegrityConstraintViolationException $e) {
-      // Now provide a value for the 'not null' column. This is expected to
-      // succeed.
-      $values['new_bundle_field_shape'] = $this->randomString();
-      $this->database->insert('entity_test_update__new_bundle_field')
-        ->fields($values)
-        ->execute();
+    catch (\RuntimeException $e) {
+      if ($e instanceof DatabaseExceptionWrapper || $e instanceof IntegrityConstraintViolationException) {
+        // Now provide a value for the 'not null' column. This is expected to
+        // succeed.
+        $values['new_bundle_field_shape'] = $this->randomString();
+        $this->database->insert('entity_test_update__new_bundle_field')
+          ->fields($values)
+          ->execute();
+      }
+      else {
+        // Keep throwing it.
+        throw $e;
+      }
     }
   }
 

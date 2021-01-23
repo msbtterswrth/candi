@@ -148,18 +148,16 @@ abstract class ContentTranslationUITestBase extends ContentTranslationTestBase {
 
     $created_field_name = $entity->hasField('content_translation_created') ? 'content_translation_created' : 'created';
     if ($entity->getFieldDefinition($created_field_name)->isTranslatable()) {
-      // Verify that the translation creation timestamp of the target
-      // translation language is newer than the creation timestamp of the source
-      // translation default language for the translatable created field.
-      $this->assertGreaterThan($metadata_source_translation->getCreatedTime(), $metadata_target_translation->getCreatedTime());
+      $this->assertTrue($metadata_target_translation->getCreatedTime() > $metadata_source_translation->getCreatedTime(),
+        new FormattableMarkup('Translation creation timestamp of the target translation @target is newer than the creation timestamp of the source translation @source for translatable created field.',
+          ['@target' => $langcode, '@source' => $default_langcode]));
     }
     else {
       $this->assertEqual($metadata_target_translation->getCreatedTime(), $metadata_source_translation->getCreatedTime(), 'Creation timestamp of the entity remained untouched after translation for non translatable created field.');
     }
 
     if ($this->testLanguageSelector) {
-      // Verify that language selector is correctly disabled on translations.
-      $this->assertSession()->fieldNotExists('edit-langcode-0-value');
+      $this->assertNoFieldByXPath('//select[@id="edit-langcode-0-value"]', NULL, 'Language selector correctly disabled on translations.');
     }
     $storage->resetCache([$this->entityId]);
     $entity = $storage->load($this->entityId);
@@ -179,8 +177,8 @@ abstract class ContentTranslationUITestBase extends ContentTranslationTestBase {
     ], ['language' => $language]);
     // This does not save anything, it merely reloads the form and fills in the
     // fields with the values from the different source language.
-    $this->drupalPostForm($add_url, $edit, 'Change');
-    $this->assertSession()->fieldValueEquals("{$this->fieldName}[0][value]", $values[$source_langcode][$this->fieldName][0]['value']);
+    $this->drupalPostForm($add_url, $edit, t('Change'));
+    $this->assertFieldByXPath("//input[@name=\"{$this->fieldName}[0][value]\"]", $values[$source_langcode][$this->fieldName][0]['value'], 'Source language correctly switched.');
 
     // Add another translation and mark the other ones as outdated.
     $values[$langcode] = $this->getNewEntityValues($langcode);
@@ -258,19 +256,16 @@ abstract class ContentTranslationUITestBase extends ContentTranslationTestBase {
       $url = $entity->toUrl('edit-form', ['language' => ConfigurableLanguage::load($added_langcode)]);
       $this->drupalGet($url);
       if ($added_langcode == $langcode) {
-        // Verify that the retranslate flag is not checked by default.
-        $this->assertSession()->fieldValueEquals('content_translation[retranslate]', FALSE);
+        $this->assertFieldByXPath('//input[@name="content_translation[retranslate]"]', FALSE, 'The retranslate flag is not checked by default.');
         $this->assertEmpty($this->xpath('//details[@id="edit-content-translation" and @open="open"]'), 'The translation tab should be collapsed by default.');
       }
       else {
-        // Verify that the translate flag is checked by default.
-        $this->assertSession()->fieldValueEquals('content_translation[outdated]', TRUE);
+        $this->assertFieldByXPath('//input[@name="content_translation[outdated]"]', TRUE, 'The translate flag is checked by default.');
         $this->assertNotEmpty($this->xpath('//details[@id="edit-content-translation" and @open="open"]'), 'The translation tab is correctly expanded when the translation is outdated.');
         $edit = ['content_translation[outdated]' => FALSE];
         $this->drupalPostForm($url, $edit, $this->getFormSubmitAction($entity, $added_langcode));
         $this->drupalGet($url);
-        // Verify that retranslate flag is now shown.
-        $this->assertSession()->fieldValueEquals('content_translation[retranslate]', FALSE);
+        $this->assertFieldByXPath('//input[@name="content_translation[retranslate]"]', FALSE, 'The retranslate flag is now shown.');
         $storage = $this->container->get('entity_type.manager')
           ->getStorage($this->entityTypeId);
         $storage->resetCache([$this->entityId]);
@@ -305,8 +300,7 @@ abstract class ContentTranslationUITestBase extends ContentTranslationTestBase {
 
     // Check that the last published translation cannot be unpublished.
     $this->drupalGet($entity->toUrl('edit-form'));
-    $this->assertSession()->fieldDisabled('content_translation[status]');
-    $this->assertSession()->fieldValueEquals('content_translation[status]', TRUE);
+    $this->assertFieldByXPath('//input[@name="content_translation[status]" and @disabled="disabled"]', TRUE, 'The last translation is published and cannot be unpublished.');
   }
 
   /**
@@ -371,8 +365,8 @@ abstract class ContentTranslationUITestBase extends ContentTranslationTestBase {
     $entity = $storage->load($this->entityId);
     $language = ConfigurableLanguage::load($langcode);
     $url = $entity->toUrl('edit-form', ['language' => $language]);
-    $this->drupalPostForm($url, [], 'Delete translation');
-    $this->submitForm([], 'Delete ' . $language->getName() . ' translation');
+    $this->drupalPostForm($url, [], t('Delete translation'));
+    $this->drupalPostForm(NULL, [], t('Delete @language translation', ['@language' => $language->getName()]));
     $storage->resetCache([$this->entityId]);
     $entity = $storage->load($this->entityId, TRUE);
     $this->assertIsObject($entity);
@@ -436,7 +430,7 @@ abstract class ContentTranslationUITestBase extends ContentTranslationTestBase {
    *   Name of the button to hit.
    */
   protected function getFormSubmitAction(EntityInterface $entity, $langcode) {
-    return 'Save' . $this->getFormSubmitSuffix($entity, $langcode);
+    return t('Save') . $this->getFormSubmitSuffix($entity, $langcode);
   }
 
   /**

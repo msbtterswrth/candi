@@ -24,7 +24,7 @@ class SaveUploadTest extends FileManagedTestBase {
    *
    * @var array
    */
-  protected static $modules = ['dblog'];
+  public static $modules = ['dblog'];
 
   /**
    * {@inheritdoc}
@@ -59,7 +59,7 @@ class SaveUploadTest extends FileManagedTestBase {
    */
   protected $imageExtension;
 
-  protected function setUp(): void {
+  protected function setUp() {
     parent::setUp();
     $account = $this->drupalCreateUser(['access site reports']);
     $this->drupalLogin($account);
@@ -80,10 +80,9 @@ class SaveUploadTest extends FileManagedTestBase {
       'file_test_replace' => FileSystemInterface::EXISTS_REPLACE,
       'files[file_test_upload]' => \Drupal::service('file_system')->realpath($this->image->getFileUri()),
     ];
-    $this->drupalPostForm('file-test/upload', $edit, 'Submit');
+    $this->drupalPostForm('file-test/upload', $edit, t('Submit'));
     $this->assertSession()->statusCodeEquals(200);
-    // Check that the success message is present.
-    $this->assertRaw(t('You WIN!'));
+    $this->assertRaw(t('You WIN!'), 'Found the success message.');
 
     // Check that the correct hooks were called then clean out the hook
     // counters.
@@ -96,8 +95,7 @@ class SaveUploadTest extends FileManagedTestBase {
    */
   public function testNormal() {
     $max_fid_after = (int) \Drupal::entityQueryAggregate('file')->aggregate('fid', 'max')->execute()[0]['fid_max'];
-    // Verify that a new file was created.
-    $this->assertGreaterThan($this->maxFidBefore, $max_fid_after);
+    $this->assertTrue($max_fid_after > $this->maxFidBefore, 'A new file was created.');
     $file1 = File::load($max_fid_after);
     $this->assertInstanceOf(File::class, $file1);
     // MIME type of the uploaded image may be either image/jpeg or image/png.
@@ -109,7 +107,7 @@ class SaveUploadTest extends FileManagedTestBase {
     // Upload a second file.
     $image2 = current($this->drupalGetTestFiles('image'));
     $edit = ['files[file_test_upload]' => \Drupal::service('file_system')->realpath($image2->uri)];
-    $this->drupalPostForm('file-test/upload', $edit, 'Submit');
+    $this->drupalPostForm('file-test/upload', $edit, t('Submit'));
     $this->assertSession()->statusCodeEquals(200);
     $this->assertRaw(t('You WIN!'));
     $max_fid_after = (int) \Drupal::entityQueryAggregate('file')->aggregate('fid', 'max')->execute()[0]['fid_max'];
@@ -135,7 +133,7 @@ class SaveUploadTest extends FileManagedTestBase {
       'files[file_test_upload]' => $image3_realpath,
       'file_subdir' => $dir,
     ];
-    $this->drupalPostForm('file-test/upload', $edit, 'Submit');
+    $this->drupalPostForm('file-test/upload', $edit, t('Submit'));
     $this->assertSession()->statusCodeEquals(200);
     $this->assertRaw(t('You WIN!'));
     $this->assertFileExists('temporary://' . $dir . '/' . trim(\Drupal::service('file_system')->basename($image3_realpath)));
@@ -148,7 +146,7 @@ class SaveUploadTest extends FileManagedTestBase {
     // It should not be possible to create two managed files with the same URI.
     $image1 = current($this->drupalGetTestFiles('image'));
     $edit = ['files[file_test_upload]' => \Drupal::service('file_system')->realpath($image1->uri)];
-    $this->drupalPostForm('file-test/upload', $edit, 'Submit');
+    $this->drupalPostForm('file-test/upload', $edit, t('Submit'));
     $max_fid_after = (int) \Drupal::entityQueryAggregate('file')->aggregate('fid', 'max')->execute()[0]['fid_max'];
     $file1 = File::load($max_fid_after);
 
@@ -160,7 +158,7 @@ class SaveUploadTest extends FileManagedTestBase {
 
     $image2 = $image1;
     $edit = ['files[file_test_upload]' => \Drupal::service('file_system')->realpath($image2->uri)];
-    $this->drupalPostForm('file-test/upload', $edit, 'Submit');
+    $this->drupalPostForm('file-test/upload', $edit, t('Submit'));
     // Received a 200 response for posted test file.
     $this->assertSession()->statusCodeEquals(200);
     $message = t('The file %file already exists. Enter a unique file URI.', ['%file' => $file1->getFileUri()]);
@@ -185,10 +183,11 @@ class SaveUploadTest extends FileManagedTestBase {
       'extensions' => $extensions,
     ];
 
-    $this->drupalPostForm('file-test/upload', $edit, 'Submit');
+    $this->drupalPostForm('file-test/upload', $edit, t('Submit'));
     $this->assertSession()->statusCodeEquals(200);
-    $this->assertSession()->responseContains('Only files with the following extensions are allowed: <em class="placeholder">' . $extensions . '</em>');
-    $this->assertRaw(t('Epic upload FAIL!'));
+    $message = t('Only files with the following extensions are allowed:') . ' <em class="placeholder">' . $extensions . '</em>';
+    $this->assertRaw($message, 'Cannot upload a disallowed extension');
+    $this->assertRaw(t('Epic upload FAIL!'), 'Found the failure message.');
 
     // Check that the correct hooks were called.
     $this->assertFileHooksCalled(['validate']);
@@ -204,10 +203,10 @@ class SaveUploadTest extends FileManagedTestBase {
       'extensions' => $extensions,
     ];
 
-    $this->drupalPostForm('file-test/upload', $edit, 'Submit');
+    $this->drupalPostForm('file-test/upload', $edit, t('Submit'));
     $this->assertSession()->statusCodeEquals(200);
-    $this->assertNoRaw(t('Only files with the following extensions are allowed:'));
-    $this->assertRaw(t('You WIN!'));
+    $this->assertNoRaw(t('Only files with the following extensions are allowed:'), 'Can upload an allowed extension.');
+    $this->assertRaw(t('You WIN!'), 'Found the success message.');
 
     // Check that the correct hooks were called.
     $this->assertFileHooksCalled(['validate', 'load', 'update']);
@@ -221,10 +220,10 @@ class SaveUploadTest extends FileManagedTestBase {
       'files[file_test_upload]' => \Drupal::service('file_system')->realpath($this->image->getFileUri()),
       'allow_all_extensions' => 'empty_array',
     ];
-    $this->drupalPostForm('file-test/upload', $edit, 'Submit');
+    $this->drupalPostForm('file-test/upload', $edit, t('Submit'));
     $this->assertSession()->statusCodeEquals(200);
-    $this->assertNoRaw(t('Only files with the following extensions are allowed:'));
-    $this->assertRaw(t('You WIN!'));
+    $this->assertNoRaw(t('Only files with the following extensions are allowed:'), 'Can upload any extension.');
+    $this->assertRaw(t('You WIN!'), 'Found the success message.');
 
     // Check that the correct hooks were called.
     $this->assertFileHooksCalled(['validate', 'load', 'update']);
@@ -240,12 +239,13 @@ class SaveUploadTest extends FileManagedTestBase {
       'allow_all_extensions' => 'empty_array',
       'is_image_file' => FALSE,
     ];
-    $this->drupalPostForm('file-test/upload', $edit, 'Submit');
+    $this->drupalPostForm('file-test/upload', $edit, t('Submit'));
     $this->assertSession()->statusCodeEquals(200);
-    $this->assertSession()->responseContains('For security reasons, your upload has been renamed to <em class="placeholder">' . $this->phpfile->filename . '_.txt' . '</em>');
+    $message = t('For security reasons, your upload has been renamed to') . ' <em class="placeholder">' . $this->phpfile->filename . '_.txt' . '</em>';
+    $this->assertRaw($message, 'Dangerous file was renamed.');
     $this->assertSession()->pageTextContains('File name is php-2.php_.txt.');
-    $this->assertRaw(t('File MIME type is text/plain.'));
-    $this->assertRaw(t('You WIN!'));
+    $this->assertRaw(t('File MIME type is text/plain.'), "Dangerous file's MIME type was changed.");
+    $this->assertRaw(t('You WIN!'), 'Found the success message.');
     // Check that the correct hooks were called.
     $this->assertFileHooksCalled(['validate', 'insert']);
   }
@@ -264,12 +264,13 @@ class SaveUploadTest extends FileManagedTestBase {
       'extensions' => 'php',
     ];
 
-    $this->drupalPostForm('file-test/upload', $edit, 'Submit');
+    $this->drupalPostForm('file-test/upload', $edit, t('Submit'));
     $this->assertSession()->statusCodeEquals(200);
-    $this->assertSession()->responseContains('For security reasons, your upload has been renamed to <em class="placeholder">' . $this->phpfile->filename . '_.txt' . '</em>');
+    $message = t('For security reasons, your upload has been renamed to') . ' <em class="placeholder">' . $this->phpfile->filename . '_.txt' . '</em>';
+    $this->assertRaw($message, 'Dangerous file was renamed.');
     $this->assertSession()->pageTextContains('File name is php-2.php_.txt.');
-    $this->assertRaw(t('File MIME type is text/plain.'));
-    $this->assertRaw(t('You WIN!'));
+    $this->assertRaw(t('File MIME type is text/plain.'), "Dangerous file's MIME type was changed.");
+    $this->assertRaw(t('You WIN!'), 'Found the success message.');
 
     // Check that the correct hooks were called.
     $this->assertFileHooksCalled(['validate', 'insert']);
@@ -280,11 +281,11 @@ class SaveUploadTest extends FileManagedTestBase {
     // Reset the hook counters.
     file_test_reset();
 
-    $this->drupalPostForm('file-test/upload', $edit, 'Submit');
+    $this->drupalPostForm('file-test/upload', $edit, t('Submit'));
     $this->assertSession()->statusCodeEquals(200);
-    $this->assertNoRaw(t('For security reasons, your upload has been renamed'));
+    $this->assertNoRaw(t('For security reasons, your upload has been renamed'), 'Found no security message.');
     $this->assertSession()->pageTextContains('File name is php-2.php.');
-    $this->assertRaw(t('You WIN!'));
+    $this->assertRaw(t('You WIN!'), 'Found the success message.');
 
     // Check that the correct hooks were called.
     $this->assertFileHooksCalled(['validate', 'insert']);
@@ -295,10 +296,11 @@ class SaveUploadTest extends FileManagedTestBase {
     // Even with insecure uploads allowed, the .php file should not be uploaded
     // if it is not explicitly included in the list of allowed extensions.
     $edit['extensions'] = 'foo';
-    $this->drupalPostForm('file-test/upload', $edit, 'Submit');
+    $this->drupalPostForm('file-test/upload', $edit, t('Submit'));
     $this->assertSession()->statusCodeEquals(200);
-    $this->assertSession()->responseContains('Only files with the following extensions are allowed: <em class="placeholder">' . $edit['extensions'] . '</em>');
-    $this->assertRaw(t('Epic upload FAIL!'));
+    $message = t('Only files with the following extensions are allowed:') . ' <em class="placeholder">' . $edit['extensions'] . '</em>';
+    $this->assertRaw($message, 'Cannot upload a disallowed extension');
+    $this->assertRaw(t('Epic upload FAIL!'), 'Found the failure message.');
 
     // Check that the correct hooks were called.
     $this->assertFileHooksCalled(['validate']);
@@ -310,10 +312,11 @@ class SaveUploadTest extends FileManagedTestBase {
     // the .php file is still rejected since it's not in the list of allowed
     // extensions).
     $config->set('allow_insecure_uploads', 0)->save();
-    $this->drupalPostForm('file-test/upload', $edit, 'Submit');
+    $this->drupalPostForm('file-test/upload', $edit, t('Submit'));
     $this->assertSession()->statusCodeEquals(200);
-    $this->assertSession()->responseContains('Only files with the following extensions are allowed: <em class="placeholder">' . $edit['extensions'] . '</em>');
-    $this->assertRaw(t('Epic upload FAIL!'));
+    $message = t('Only files with the following extensions are allowed:') . ' <em class="placeholder">' . $edit['extensions'] . '</em>';
+    $this->assertRaw($message, 'Cannot upload a disallowed extension');
+    $this->assertRaw(t('Epic upload FAIL!'), 'Found the failure message.');
 
     // Check that the correct hooks were called.
     $this->assertFileHooksCalled(['validate']);
@@ -344,11 +347,11 @@ class SaveUploadTest extends FileManagedTestBase {
     $munged_filename = substr($munged_filename, 0, strrpos($munged_filename, '.'));
     $munged_filename .= '_.' . $this->imageExtension;
 
-    $this->drupalPostForm('file-test/upload', $edit, 'Submit');
+    $this->drupalPostForm('file-test/upload', $edit, t('Submit'));
     $this->assertSession()->statusCodeEquals(200);
-    $this->assertRaw(t('For security reasons, your upload has been renamed'));
-    $this->assertRaw(t('File name is @filename', ['@filename' => $munged_filename]));
-    $this->assertRaw(t('You WIN!'));
+    $this->assertRaw(t('For security reasons, your upload has been renamed'), 'Found security message.');
+    $this->assertRaw(t('File name is @filename', ['@filename' => $munged_filename]), 'File was successfully munged.');
+    $this->assertRaw(t('You WIN!'), 'Found the success message.');
 
     // Check that the correct hooks were called.
     $this->assertFileHooksCalled(['validate', 'insert']);
@@ -364,11 +367,11 @@ class SaveUploadTest extends FileManagedTestBase {
         'extensions' => $extensions,
       ];
 
-    $this->drupalPostForm('file-test/upload', $edit, 'Submit');
+    $this->drupalPostForm('file-test/upload', $edit, t('Submit'));
     $this->assertSession()->statusCodeEquals(200);
-    $this->assertNoRaw(t('For security reasons, your upload has been renamed'));
-    $this->assertRaw(t('File name is @filename', ['@filename' => $this->image->getFilename()]));
-    $this->assertRaw(t('You WIN!'));
+    $this->assertNoRaw(t('For security reasons, your upload has been renamed'), 'Found no security message.');
+    $this->assertRaw(t('File name is @filename', ['@filename' => $this->image->getFilename()]), 'File was not munged when all extensions within it are allowed.');
+    $this->assertRaw(t('You WIN!'), 'Found the success message.');
 
     // Check that the correct hooks were called.
     $this->assertFileHooksCalled(['validate', 'insert']);
@@ -383,11 +386,11 @@ class SaveUploadTest extends FileManagedTestBase {
       'allow_all_extensions' => 'empty_array',
     ];
 
-    $this->drupalPostForm('file-test/upload', $edit, 'Submit');
+    $this->drupalPostForm('file-test/upload', $edit, t('Submit'));
     $this->assertSession()->statusCodeEquals(200);
-    $this->assertNoRaw(t('For security reasons, your upload has been renamed'));
-    $this->assertRaw(t('File name is @filename', ['@filename' => $this->image->getFilename()]));
-    $this->assertRaw(t('You WIN!'));
+    $this->assertNoRaw(t('For security reasons, your upload has been renamed'), 'Found no security message.');
+    $this->assertRaw(t('File name is @filename', ['@filename' => $this->image->getFilename()]), 'File was not munged when allowing any extension.');
+    $this->assertRaw(t('You WIN!'), 'Found the success message.');
 
     // Check that the correct hooks were called.
     $this->assertFileHooksCalled(['validate', 'insert']);
@@ -404,11 +407,11 @@ class SaveUploadTest extends FileManagedTestBase {
         'extensions' => $extensions,
       ];
 
-    $this->drupalPostForm('file-test/upload', $edit, 'Submit');
+    $this->drupalPostForm('file-test/upload', $edit, t('Submit'));
     $this->assertSession()->statusCodeEquals(200);
-    $this->assertRaw(t('For security reasons, your upload has been renamed'));
-    $this->assertRaw(t('File name is @filename', ['@filename' => 'image-test.png.php_.png']));
-    $this->assertRaw(t('You WIN!'));
+    $this->assertRaw(t('For security reasons, your upload has been renamed'), 'Found security message.');
+    $this->assertRaw(t('File name is @filename', ['@filename' => 'image-test.png.php_.png']), 'File was successfully munged.');
+    $this->assertRaw(t('You WIN!'), 'Found the success message.');
 
     // Check that the correct hooks were called.
     $this->assertFileHooksCalled(['validate', 'insert']);
@@ -422,11 +425,11 @@ class SaveUploadTest extends FileManagedTestBase {
       'allow_all_extensions' => 'empty_array',
     ];
 
-    $this->drupalPostForm('file-test/upload', $edit, 'Submit');
+    $this->drupalPostForm('file-test/upload', $edit, t('Submit'));
     $this->assertSession()->statusCodeEquals(200);
-    $this->assertRaw(t('For security reasons, your upload has been renamed'));
-    $this->assertRaw(t('File name is @filename.', ['@filename' => 'image-test.png_.php_.png_.txt']));
-    $this->assertRaw(t('You WIN!'));
+    $this->assertRaw(t('For security reasons, your upload has been renamed'), 'Found security message.');
+    $this->assertRaw(t('File name is @filename.', ['@filename' => 'image-test.png_.php_.png_.txt']), 'File was successfully munged.');
+    $this->assertRaw(t('You WIN!'), 'Found the success message.');
 
     // Check that the correct hooks were called.
     $this->assertFileHooksCalled(['validate', 'insert']);
@@ -442,11 +445,11 @@ class SaveUploadTest extends FileManagedTestBase {
       'allow_all_extensions' => 'empty_array',
     ];
 
-    $this->drupalPostForm('file-test/upload', $edit, 'Submit');
+    $this->drupalPostForm('file-test/upload', $edit, t('Submit'));
     $this->assertSession()->statusCodeEquals(200);
-    $this->assertRaw(t('For security reasons, your upload has been renamed'));
-    $this->assertRaw(t('File name is @filename.', ['@filename' => 'image-test.png_.cgi_.png_.txt']));
-    $this->assertRaw(t('You WIN!'));
+    $this->assertRaw(t('For security reasons, your upload has been renamed'), 'Found security message.');
+    $this->assertRaw(t('File name is @filename.', ['@filename' => 'image-test.png_.cgi_.png_.txt']), 'File was successfully munged.');
+    $this->assertRaw(t('You WIN!'), 'Found the success message.');
 
     // Check that the correct hooks were called.
     $this->assertFileHooksCalled(['validate', 'insert']);
@@ -461,10 +464,10 @@ class SaveUploadTest extends FileManagedTestBase {
       'allow_all_extensions' => 'empty_string',
     ];
 
-    $this->drupalPostForm('file-test/save_upload_from_form_test', $edit, 'Submit');
+    $this->drupalPostForm('file-test/save_upload_from_form_test', $edit, t('Submit'));
     $this->assertSession()->statusCodeEquals(200);
-    $this->assertNoRaw(t('For security reasons, your upload has been renamed'));
-    $this->assertRaw(t('Epic upload FAIL!'));
+    $this->assertNoRaw(t('For security reasons, your upload has been renamed'), 'Found security message.');
+    $this->assertRaw(t('Epic upload FAIL!'), 'Found the failure message.');
 
     // Check that the correct hooks were called.
     $this->assertFileHooksCalled(['validate']);
@@ -478,9 +481,9 @@ class SaveUploadTest extends FileManagedTestBase {
       'file_test_replace' => FileSystemInterface::EXISTS_RENAME,
       'files[file_test_upload]' => \Drupal::service('file_system')->realpath($this->image->getFileUri()),
     ];
-    $this->drupalPostForm('file-test/upload', $edit, 'Submit');
+    $this->drupalPostForm('file-test/upload', $edit, t('Submit'));
     $this->assertSession()->statusCodeEquals(200);
-    $this->assertRaw(t('You WIN!'));
+    $this->assertRaw(t('You WIN!'), 'Found the success message.');
     $this->assertSession()->pageTextContains('File name is image-test_0.png.');
 
     // Check that the correct hooks were called.
@@ -495,9 +498,9 @@ class SaveUploadTest extends FileManagedTestBase {
       'file_test_replace' => FileSystemInterface::EXISTS_REPLACE,
       'files[file_test_upload]' => \Drupal::service('file_system')->realpath($this->image->getFileUri()),
     ];
-    $this->drupalPostForm('file-test/upload', $edit, 'Submit');
+    $this->drupalPostForm('file-test/upload', $edit, t('Submit'));
     $this->assertSession()->statusCodeEquals(200);
-    $this->assertRaw(t('You WIN!'));
+    $this->assertRaw(t('You WIN!'), 'Found the success message.');
     $this->assertSession()->pageTextContains('File name is image-test.png.');
 
     // Check that the correct hooks were called.
@@ -512,9 +515,9 @@ class SaveUploadTest extends FileManagedTestBase {
       'file_test_replace' => FileSystemInterface::EXISTS_ERROR,
       'files[file_test_upload]' => \Drupal::service('file_system')->realpath($this->image->getFileUri()),
     ];
-    $this->drupalPostForm('file-test/upload', $edit, 'Submit');
+    $this->drupalPostForm('file-test/upload', $edit, t('Submit'));
     $this->assertSession()->statusCodeEquals(200);
-    $this->assertRaw(t('Epic upload FAIL!'));
+    $this->assertRaw(t('Epic upload FAIL!'), 'Found the failure message.');
 
     // Check that the no hooks were called while failing.
     $this->assertFileHooksCalled([]);
@@ -524,8 +527,8 @@ class SaveUploadTest extends FileManagedTestBase {
    * Test for no failures when not uploading a file.
    */
   public function testNoUpload() {
-    $this->drupalPostForm('file-test/upload', [], 'Submit');
-    $this->assertNoRaw(t('Epic upload FAIL!'));
+    $this->drupalPostForm('file-test/upload', [], t('Submit'));
+    $this->assertNoRaw(t('Epic upload FAIL!'), 'Failure message not found.');
   }
 
   /**
@@ -545,10 +548,10 @@ class SaveUploadTest extends FileManagedTestBase {
     ];
 
     \Drupal::state()->set('file_test.disable_error_collection', TRUE);
-    $this->drupalPostForm('file-test/upload', $edit, 'Submit');
+    $this->drupalPostForm('file-test/upload', $edit, t('Submit'));
     $this->assertSession()->statusCodeEquals(200);
-    $this->assertRaw(t('File upload error. Could not move uploaded file.'));
-    $this->assertRaw(t('Epic upload FAIL!'));
+    $this->assertRaw(t('File upload error. Could not move uploaded file.'), 'Found the failure message.');
+    $this->assertRaw(t('Epic upload FAIL!'), 'Found the failure message.');
 
     // Uploading failed. Now check the log.
     $this->drupalGet('admin/reports/dblog');
@@ -556,7 +559,7 @@ class SaveUploadTest extends FileManagedTestBase {
     $this->assertRaw(t('Upload error. Could not move uploaded file @file to destination @destination.', [
       '@file' => $this->image->getFilename(),
       '@destination' => 'temporary://' . $test_directory . '/' . $this->image->getFilename(),
-    ]));
+    ]), 'Found upload error log entry.');
   }
 
   /**
