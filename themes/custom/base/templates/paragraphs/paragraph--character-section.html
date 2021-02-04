@@ -1,0 +1,23 @@
+{% block content %}
+{% set position = paragraph.field_position.value %}
+{% set color = paragraph.field_background_color.value %}
+{% if color is not empty %}
+    {% set bg = color ~ 'has-bg'%}
+{% endif %}
+{% if paragraph.field_heading_size.value %}
+    {% set heading = paragraph.field_heading_size.value %}
+{% else%}    
+    {% set heading = "h2" %}
+{% endif %}
+  <div class="featured-media {{position}} {{bg}}">
+    <div class="img">{{content.field_image}}</div>
+    <div class="blurb">      
+        <div class="inner">    
+            {{ content.field_blurb }} 
+            {% if content.field_link.0 %}
+                <a href="{{ paragraph.field_link.0.url }}" class="btn black">{{ paragraph.field_link.0.title }}</a>
+            {% endif %}
+        </div>
+    </div>
+  </div>
+{% endblock %}
