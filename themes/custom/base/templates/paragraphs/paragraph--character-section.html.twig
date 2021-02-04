@@ -4,16 +4,17 @@
 {% if color is not empty %}
     {% set bg = color ~ 'has-bg'%}
 {% endif %}
-{% if paragraph.field_heading_size.value %}
-    {% set heading = paragraph.field_heading_size.value %}
-{% else%}    
-    {% set heading = "h2" %}
+{% if paragraph.field_title_style.value %}
+    {% set heading = paragraph.field_title_style.value %}
 {% endif %}
   <div class="featured-media {{position}} {{bg}}">
-    <div class="img">{{content.field_image}}</div>
+    <div class="img">{{content.field_media}}</div>
     <div class="blurb">      
-        <div class="inner">    
-            {{ content.field_blurb }} 
+        <div class="inner">            
+            {% if content.field_title %}
+                <h2 class="{{heading}}"">{{content.field_title.0}}</h2>
+            {% endif %}
+            {{ content.field_caption }} 
             {% if content.field_link.0 %}
                 <a href="{{ paragraph.field_link.0.url }}" class="btn black">{{ paragraph.field_link.0.title }}</a>
             {% endif %}
