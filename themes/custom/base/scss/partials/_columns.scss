@@ -34,18 +34,6 @@
         @include breakpoint(xs) {            
             grid-template-columns: repeat(1, 1fr);
         }
-        &.right {
-            grid-template-columns: 40% 60%;
-            @include breakpoint(xs) {            
-                grid-template-columns: repeat(1, 1fr);
-            }
-        }
-        &.left {
-            grid-template-columns: 60% 40%;
-            @include breakpoint(xs) {            
-                grid-template-columns: repeat(1, 1fr);
-            }
-        }
     }
     &.three {        
         grid-template-columns: repeat(3, 1fr);
@@ -68,5 +56,31 @@
     .text {
         height: 100%;
         margin: 0;
+    }
+}
+.layout {
+    &.has-bg {
+        padding: 150px 0;
+        &.black {
+            background: #000;
+        }
+        &.white {
+            background: #fff;
+        }
+        &.blue {
+            background: $blue;
+        }
+        &.green {
+            background: $green;
+        }
+        &.gold {
+            background: $gold;
+        }
+        &.pink {
+            background: $pink;
+        }
+        &.purple {
+            background: $purple;
+        }
     }
 }

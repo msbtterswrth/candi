@@ -8,7 +8,7 @@
     input {
         border-radius:0;
         border:0;
-        border-bottom:2px solid $blue;
+        border-bottom:2px solid $secondary;
         box-shadow:none;
         outline:none;
         line-height:32px;
@@ -20,10 +20,10 @@
         color:$md-gray;
         background:#f0f0f0;
         &:focus, &:hover {
-            border-bottom:2px solid $dk-blue; 
+            border-bottom:2px solid $tertiary; 
         }
         &.error {
-            border-bottom:2px solid $red;
+            border-bottom:2px solid $primary;
         }
         @include placeholder {
             color:$gray;
@@ -33,14 +33,14 @@
     textarea {
         border-radius:0;
         border:0;
-        border-bottom:2px solid $blue;
+        border-bottom:2px solid $secondary;
         box-shadow:none;
         outline:none;
         padding:10px;
         width:100%;
         background:#f0f0f0;
         &:focus, &:hover {
-            border-bottom:2px solid $dk-blue; 
+            border-bottom:2px solid $tertiary; 
             box-shadow:none;
         }
         @include placeholder {
@@ -91,7 +91,7 @@
             line-height: 24px;
         }
         &::before {
-            border:2px solid $blue;
+            border:2px solid $secondary;
             border-radius: 0;
             background:none;
             height:20px;
@@ -148,7 +148,7 @@ fieldset {
         }
     }
     .dropdown-toggle {
-        background:$blue;
+        background: $secondary;
         border-radius:0;
         border:none;
         box-shadow:none;
@@ -166,7 +166,7 @@ fieldset {
             box-shadow:none;
             outline:none;
             color:#fff;
-            background:darken($blue,10%);
+            background:darken($secondary,10%);
             text-shadow:none;
             .bs-caret {
                 .caret {
@@ -213,7 +213,7 @@ fieldset {
         border:none;
         box-shadow:none;
         border-radius:0;
-        background:$blue;
+        background:$secondary;
         > li {
             margin: 0;
             > a {
@@ -223,7 +223,7 @@ fieldset {
                 background:none;
                 &:hover, &:focus {
                     color:#fff;
-                    background:darken($blue,5%)
+                    background:darken($secondary,5%)
                 }
             }
             &.selected {
@@ -232,7 +232,7 @@ fieldset {
                 }
             }
             + li {
-                border-top:1px solid lighten($blue,2%);
+                border-top:1px solid lighten($secondary,2%);
             }
         }                                
     }

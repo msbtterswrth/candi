@@ -34,19 +34,19 @@
             &:hover {
                 span {
                     &:nth-of-type(1) {
-                        background:$teal;
+                        background:$primary;
                     }
                     &:nth-of-type(2) {
-                        background:$teal;
+                        background:$secondary;
                         margin-left: 0;
                     }
                     &:nth-of-type(3) {
-                        background: $teal;
+                        background: $primary;
                     }
                 }
             }
             span {
-                background: $dk-blue;
+                background: $primary;
                 border-radius: 3px;
                 display: block;
                 width: 25px;
@@ -59,12 +59,12 @@
                 }        
                 .nav-open & {
                     &:nth-of-type(1) {
-                        background:$teal;
+                        background:$primary;
                         margin-bottom: -4px;
                         transform: rotate(45deg);
                     }
                     &:nth-of-type(2) {
-                        background:$teal;
+                        background:$primary;
                         margin-left: 0;
                         transform: rotate(-45deg);
                     }
@@ -131,6 +131,7 @@
                                 }
                             }
                             &:not(.btn) {
+                                color: #000;
                                 position: relative;
                                 @include underline;
                                 @include breakpoint(sm) {
@@ -140,16 +141,16 @@
                                     color:#fff;
                                 }
                                 &:focus, &.is-active {
-                                    color:$teal;
+                                    color: $primary;
                                 }
                                 &::before {
-                                    background:$dk-blue;
+                                    background: $primary;
                                 }
                                 &::after {
                                     display: none
                                 }
                                 @include breakpoint(sm-max) {
-                                    color: $secondary;
+                                    color: $primary;
                                     font-size: 18px;
                                     text-decoration:none;
                                 }

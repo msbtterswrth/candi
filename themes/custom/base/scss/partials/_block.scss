@@ -64,7 +64,7 @@
                     &:hover, &:focus {
                         &::before {
                             content:"Copied!";
-                            background:$teal;
+                            background:$primary;
                         }
                     }
                 }
