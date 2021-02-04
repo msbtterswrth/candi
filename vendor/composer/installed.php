@@ -6,7 +6,7 @@
     'aliases' => 
     array (
     ),
-    'reference' => '91169fd8b70c25b456ab9091eeaa523f2788fcee',
+    'reference' => 'e6e9a9661ec59c158cb45eeed2e4701b59aa05fa',
     'name' => 'drupal/legacy-project',
   ),
   'versions' => 
@@ -744,7 +744,7 @@
       'aliases' => 
       array (
       ),
-      'reference' => '91169fd8b70c25b456ab9091eeaa523f2788fcee',
+      'reference' => 'e6e9a9661ec59c158cb45eeed2e4701b59aa05fa',
     ),
     'drupal/link' => 
     array (
@@ -1012,6 +1012,15 @@
         0 => '8.9.13',
       ),
     ),
+    'drupal/svg_image' => 
+    array (
+      'pretty_version' => '1.14.0',
+      'version' => '1.14.0.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '8.x-1.14',
+    ),
     'drupal/syslog' => 
     array (
       'replaced' => 
@@ -1154,6 +1163,15 @@
       array (
       ),
       'reference' => 'ade6887fd9bd74177769645ab5c474824f8a418a',
+    ),
+    'enshrined/svg-sanitize' => 
+    array (
+      'pretty_version' => '0.14.0',
+      'version' => '0.14.0.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => 'beff89576a72540ee99476aeb9cfe98222e76fb8',
     ),
     'google/recaptcha' => 
     array (

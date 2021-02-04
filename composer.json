@@ -38,6 +38,7 @@
         "drupal/recaptcha": "^2.5",
         "drupal/recaptcha_v3": "^1.1",
         "drupal/smart_trim": "^1.2",
+        "drupal/svg_image": "^1.14",
         "drupal/viewfield": "^3.0@beta",
         "drupal/webform": "^5.8"
     },
