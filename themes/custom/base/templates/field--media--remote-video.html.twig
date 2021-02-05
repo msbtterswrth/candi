@@ -55,11 +55,15 @@
 {% if label_hidden %}
   {% if multiple %}
       {% for item in items %}
-        {{ item.content }}
+        <div class="embed-responsive embed-responsive-16by9">
+            {{ item.content }}
+        </div>
       {% endfor %}
   {% else %}
     {% for item in items %}
-      {{ item.content }}
+        <div class="embed-responsive embed-responsive-16by9">
+            {{ item.content }}
+        </div>
     {% endfor %}
   {% endif %}
 {% else %}

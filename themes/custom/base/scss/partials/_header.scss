@@ -132,6 +132,8 @@
                             }
                             &:not(.btn) {
                                 color: #000;
+                                font-size: 21px;
+                                font-weight: 600;
                                 position: relative;
                                 @include underline;
                                 @include breakpoint(sm) {
