@@ -9,7 +9,7 @@
         font-weight: 600;
         line-height:20px;
         margin-bottom: 15px;
-        padding:12px 40px;
+        padding:12px 40px 15px;
         position: relative;
         text-align: center;
         text-decoration:none!important;
@@ -97,7 +97,7 @@
             background:#000;
             color:#fff;
             &:hover, &:focus {
-                background: $md-gray;
+                background: $dk-gray;
             }
         }
         &.outline {
