@@ -1,12 +1,11 @@
 {% block content %}
-{% set container = paragraph.field_container_size.value %}
 {% set position = paragraph.field_position.value %}
 {% if paragraph.field_heading_size.value %}
     {% set heading = paragraph.field_heading_size.value %}
 {% else%}    
     {% set heading = "h2" %}
 {% endif %}
-  <div class="featured-media {{container}} {{position}}">
+  <div class="featured-media {{position}}">
     <div class="inner">
         <div class="img">{{content.field_media}}</div>
         <div class="blurb">      

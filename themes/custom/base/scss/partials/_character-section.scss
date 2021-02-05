@@ -1,8 +1,5 @@
 .character {    
-    display: grid;
-    grid-gap: 50px;
     &.has-bg {
-        padding: 150px 0;
         &.black {
             background: #000;
         }
@@ -15,8 +12,8 @@
         &.green {
             background: $green;
         }
-        &.gold {
-            background: $gold;
+        &.orange {
+            background: $orange;
         }
         &.pink {
             background: $pink;
@@ -24,32 +21,48 @@
         &.purple {
             background: $purple;
         }
+        .img {
+            margin-top: -50px;
+        }
+        .blurb {            
+            padding: 150px 0;
+        }
     }
     &.left {
-        grid: auto / 40% 60%;
-        @include breakpoint(sm-max) {
-            grid: auto / 100%;           
+        .inner {
+            grid: auto / 40% 60%;
+            @include breakpoint(sm-max) {
+                grid: auto / 100%;           
+            }
         }
     }
     &.right {
-        grid: auto / 60% 40%;
-        @include breakpoint(sm-max) {
-            grid: auto / 100%;        
-        }
-        .img {
-            grid-column: 2;
-            @include breakpoint(sm-max) {
-                grid-column: 1;           
-            }
-        }
-    }    
-    .blurb {
-        place-self: center end;
         .inner {
-            position: relative;
+            grid: auto / 60% 40%;
             @include breakpoint(sm-max) {
-                margin-top: 20px;
+                grid: auto / 100%;        
             }
+            .img {
+                grid-column: 2;
+                @include breakpoint(sm-max) {
+                    grid-column: 1;           
+                }
+            }
+            
+        }
+    }  
+    .inner {
+        display: grid;
+        grid-gap: 50px;
+        margin: 0 auto;
+        max-width: 1400px;
+        padding: 0 15px;
+        width: 80%;
+        @include breakpoint(sm-max) {            
+            width: 100%;
+        }
+        .blurb {
+            align-self: center;
             p {
                 color: #fff;
                 font-size: 16px;

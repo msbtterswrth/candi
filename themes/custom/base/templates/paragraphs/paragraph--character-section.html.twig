@@ -8,18 +8,16 @@
     {% set heading = paragraph.field_title_style.value %}
 {% endif %}
   <div class="character {{position}} {{bg}}">
-    <div class="container">
+    <div class="inner">
         <div class="img">{{content.field_media}}</div>
-        <div class="blurb">      
-            <div class="inner">            
-                {% if content.field_title %}
-                    <h2 class="{{heading}}"">{{content.field_title.0}}</h2>
-                {% endif %}
-                {{ content.field_caption }} 
-                {% if content.field_link.0 %}
-                    <a href="{{ paragraph.field_link.0.url }}" class="btn black">{{ paragraph.field_link.0.title }}</a>
-                {% endif %}
-            </div>
+        <div class="blurb">             
+            {% if content.field_title %}
+                <h2 class="{{heading}}">{{content.field_title.0}}</h2>
+            {% endif %}
+            {{ content.field_caption }} 
+            {% if content.field_link.0 %}
+                <a href="{{ paragraph.field_link.0.url }}" class="btn black">{{ paragraph.field_link.0.title }}</a>
+            {% endif %}
         </div>
     </div>
   </div>
