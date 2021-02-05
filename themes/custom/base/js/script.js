@@ -94,6 +94,7 @@
                 $(".nav-toggle").click(function() {
                   var height = $(this).next('div').prop('scrollHeight');
                   $(this).toggleClass('open');
+                  $("body").toggleClass('nav-open');
                   $(this).siblings('div').css('max-height', 0);
                   if ($(this).hasClass('open')) {    
                     $(this).next('div').css('max-height', height);
