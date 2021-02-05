@@ -2,12 +2,12 @@
 {% set position = paragraph.field_position.value %}
 {% set color = paragraph.field_background_color.value %}
 {% if color is not empty %}
-    {% set bg = color ~ 'has-bg'%}
+    {% set bg = color ~ ' has-bg'%}
 {% endif %}
 {% if paragraph.field_title_style.value %}
     {% set heading = paragraph.field_title_style.value %}
 {% endif %}
-  <div class="featured-media {{position}} {{bg}}">
+  <div class="fcharacter {{position}} {{bg}}">
     <div class="img">{{content.field_media}}</div>
     <div class="blurb">      
         <div class="inner">            

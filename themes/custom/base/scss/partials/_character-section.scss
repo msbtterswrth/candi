@@ -1,4 +1,28 @@
-.featured-media {
+.character {    
+    &.has-bg {
+        padding: 150px 0;
+        &.black {
+            background: #000;
+        }
+        &.white {
+            background: #fff;
+        }
+        &.blue {
+            background: $blue;
+        }
+        &.green {
+            background: $green;
+        }
+        &.gold {
+            background: $gold;
+        }
+        &.pink {
+            background: $pink;
+        }
+        &.purple {
+            background: $purple;
+        }
+    }
     &.left {
         display: grid;
         place-items: start stretch;
@@ -37,7 +61,7 @@
                     }
                 }
                 p {
-                    color: #000;
+                    color: #fff;
                     font-size: 16px;
                     line-height: 24px;
                 }
@@ -101,7 +125,7 @@
                     }
                 }
                 p {
-                    color: #000;
+                    color: #fff;
                     font-size: 16px;
                     line-height: 24px;
                 }
