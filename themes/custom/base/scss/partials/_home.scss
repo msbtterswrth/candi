@@ -1,24 +1,4 @@
 .home-wrap {
-    .header {
-        background: none;
-        position: absolute;
-    }
-    .hero {
-        margin: 0;
-    }
-    .top {
-        background: $dk-gray;
-        color: #fff;
-        padding: 60px 0;
-        a {
-            color: $primary;
-            font-weight: bold;            
-            text-decoration: underline;
-            &:hover, &:focus {
-                color: $tertiary;
-            }
-        }
-    }
     .main {
        display: none;
     }

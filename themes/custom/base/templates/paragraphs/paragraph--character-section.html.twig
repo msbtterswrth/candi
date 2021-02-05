@@ -14,9 +14,9 @@
             {% if content.field_title %}
                 <h2 class="{{heading}}">{{content.field_title.0}}</h2>
             {% endif %}
-            {{ content.field_caption }} 
+            <p>{{ content.field_caption }}<p>
             {% if content.field_link.0 %}
-                <a href="{{ paragraph.field_link.0.url }}" class="btn black">{{ paragraph.field_link.0.title }}</a>
+              <p><a href="{{ paragraph.field_link.0.url }}" class="btn black">{{ paragraph.field_link.0.title }}</a></p>
             {% endif %}
         </div>
     </div>

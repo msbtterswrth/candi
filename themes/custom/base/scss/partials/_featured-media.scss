@@ -1,122 +1,76 @@
-.featured-media {
-    &.left {
-        display: grid;
-        place-items: start stretch;
-        justify-content: stretch;
-        grid-auto-flow: dense;
-        margin-bottom: 50px;
-        grid-template-columns: 52% 48%;
-        @include breakpoint(sm-max) {
-            grid-template-columns: 100%;            
+.featured-media {   
+    &.has-bg {
+        padding: 60px;
+        &.black {
+            background: #000;
         }
-        .blurb {
-            padding-left: 40px;
-            place-self: center start;
+        &.white {
+            background: #fff;
+        }
+        &.blue {
+            background: $blue;
+        }
+        &.green {
+            background: $green;
+        }
+        &.orange {
+            background: $orange;
+        }
+        &.pink {
+            background: $pink;
+        }
+        &.purple {
+            background: $purple;
+        }
+    }
+    &.left {
+        .inner {
+            grid: auto / 40% 60%;
             @include breakpoint(sm-max) {
-                padding: 0;
-            }
-            .inner {
-                padding-left: 20px;
-                position: relative;
-                @include breakpoint(sm-max) {
-                    border: none;
-                    border-top: 5px solid $gold;
-                    margin-top: 20px;
-                    padding: 20px 0 0 0 ;
-                }
-                &::before {
-                    left: 0;
-                    background: $gold;
-                    content: "";
-                    position: absolute;
-                    height: calc(100% - 10px);
-                    top: 10px;
-                    width: 5px;
-                    @include breakpoint(sm-max) {
-                        display: none;
-                    }
-                }
-                p {
-                    color: #000;
-                    font-size: 16px;
-                    line-height: 24px;
-                }
-                + a {
-                    margin-left:20px;
-                    @include breakpoint(sm-max) {
-                        margin: 15px 0 0 0;
-                    }
-                }
-            }
-            .img {
-                border: 10px solid $gray;
-                img {
-                    width: 100%;
-                }
+                grid: auto / 100%;           
             }
         }
     }
     &.right {
-        display: grid;
-        place-items: start stretch;
-        justify-content: stretch;
-        grid-auto-flow: dense;
-        margin-bottom: 50px;
-        grid-template-columns: 48% 52%;
-        @include breakpoint(sm-max) {
-            grid-template-columns: 100%;            
-        }
-        .img {
-            grid-column-start: 2;
+        .inner {
+            grid: auto / 60% 40%;
             @include breakpoint(sm-max) {
-                grid-column-start: 1;            
-            }
-        }
-        .blurb {
-            padding-right: 40px;
-            place-self: center end;
-            text-align: right;
-            @include breakpoint(sm-max) {
-                padding: 0;
-                text-align: left;
-            }
-            .inner {
-                padding-right: 20px;
-                position: relative;
-                @include breakpoint(sm-max) {
-                    border-top: 5px solid $gold;
-                    margin-top: 20px;
-                    padding: 20px 0 0 0 ;
-                }
-                &::before {
-                    right: 0;
-                    background: $gold;
-                    content: "";
-                    position: absolute;
-                    height: calc(100% - 10px);
-                    top: 10px;
-                    width: 5px;
-                    @include breakpoint(sm-max) {
-                        display: none;
-                    }
-                }
-                p {
-                    color: #000;
-                    font-size: 16px;
-                    line-height: 24px;
-                }
-                + a {
-                    margin-right:20px;
-                    @include breakpoint(sm-max) {
-                        margin: 15px 0 0 0;
-                    }
-                }
+                grid: auto / 100%;        
             }
             .img {
-                border: 10px solid $gray;
-                img {
-                    width: 100%;
+                grid-column: 2;
+                @include breakpoint(sm-max) {
+                    grid-column: 1;           
                 }
+            }
+            
+        }
+    }  
+    .inner {
+        display: grid;
+        grid-auto-flow: dense;
+        grid-gap: 50px;
+        margin: 0 auto;
+        max-width: 1400px;
+        padding: 0 15px;
+        width: 80%;
+        @include breakpoint(sm-max) {            
+            width: 100%;
+        }
+        .blurb {
+            align-self: center;
+            p {
+                color: #fff;
+                font-size: 16px;
+                line-height: 24px;
+            }
+        }
+        .img {
+            @include breakpoint(sm-max) {
+                margin-bottom: 20px;
+            }
+            img {
+                width: 100%;
             }
         }
     }

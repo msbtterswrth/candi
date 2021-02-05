@@ -53,6 +53,7 @@
     }  
     .inner {
         display: grid;
+        grid-auto-flow: dense;
         grid-gap: 50px;
         margin: 0 auto;
         max-width: 1400px;
@@ -70,6 +71,7 @@
             }
         }
         .img {
+            padding-bottom: 30px;
             img {
                 width: 100%;
             }
