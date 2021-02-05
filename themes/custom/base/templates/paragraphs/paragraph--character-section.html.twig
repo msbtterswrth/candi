@@ -11,7 +11,7 @@
     <div class="inner">
         <div class="img">{{content.field_media}}</div>
         <div class="blurb">             
-            {% if content.field_title %}
+            {% if content.field_title.0 %}
                 <h2 class="{{heading}}">{{content.field_title.0}}</h2>
             {% endif %}
             <p>{{ content.field_caption }}<p>

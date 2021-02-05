@@ -3,6 +3,7 @@
         padding: 60px;
         &.black {
             background: #000;
+            color: #fff;
         }
         &.white {
             background: #fff;
@@ -25,7 +26,8 @@
     }
     &.left {
         .inner {
-            grid: auto / 40% 60%;
+            grid: auto / 66% 33%;
+            grid-auto-flow: dense;
             @include breakpoint(sm-max) {
                 grid: auto / 100%;           
             }
@@ -33,7 +35,8 @@
     }
     &.right {
         .inner {
-            grid: auto / 60% 40%;
+            grid: auto / 33% 66%;
+            grid-auto-flow: dense;
             @include breakpoint(sm-max) {
                 grid: auto / 100%;        
             }
@@ -48,7 +51,6 @@
     }  
     .inner {
         display: grid;
-        grid-auto-flow: dense;
         grid-gap: 50px;
         margin: 0 auto;
         max-width: 1400px;
@@ -60,9 +62,8 @@
         .blurb {
             align-self: center;
             p {
-                color: #fff;
-                font-size: 16px;
-                line-height: 24px;
+                font-size: 21px;
+                line-height: 28px;
             }
         }
         .img {
