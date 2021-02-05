@@ -1,4 +1,9 @@
-.site-wrap {    
+.site-wrap {  
+    .container {
+        @include breakpoint(xl) {
+            width: 1400px;
+        }
+    }
     .flush {
         margin:0!important;
     } 
@@ -17,13 +22,13 @@
     .breadcrumb {
         background:none;
         padding:0;
-        color:$gray;
-        margin:10px 0 0 0;
+        color: $gray;
+        margin: 10px 0 0 0;
         @include breakpoint(sm-max) {
             margin: 0 0 10px 0;
         }
         a {
-            color:$gray;
+            color: $gray;
             letter-spacing:1px;
             text-decoration: none;
             text-transform:uppercase;
