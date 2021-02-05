@@ -21,6 +21,14 @@
         position: relative;
         width: 100%;
         z-index: 9;
+        .nav-open & {
+            position: fixed;
+        }
+        a {
+            img {
+                max-width: 220px!important;
+            }
+        }
         .nav-toggle {
             display: none;
             float: right;
@@ -29,7 +37,7 @@
                 display: block;    
             }
             .nav-open & {
-                margin-bottom: 10px;
+                margin-top: 20px;
             }
             &:hover {
                 span {
@@ -55,6 +63,7 @@
                 transform-origin: center;
                 @include transition(margin .3s $cubic, transform .3s $cubic, background .3s linear);
                 &:nth-of-type(2) {
+                    background:$secondary;
                     margin-left: -3px;
                 }        
                 .nav-open & {
@@ -81,16 +90,16 @@
                 max-height:0;
                 min-height: 100vh;
                 overflow: hidden;
-                position: absolute;
+                position: fixed;
                 right: 0;
                 text-align: left;
-                top: calc(100% + 20px);
-                width:0;
+                top: 90px;
+                width: 0;
                 z-index: 9;
                 @include transition(width .3s $cubic)
             }
             .nav-open & {
-                width: 80vw;
+                width: 100vw;
             }
             nav {            
                 @include breakpoint(sm-max) {
