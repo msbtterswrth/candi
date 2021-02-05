@@ -1,11 +1,15 @@
 {% block content %}
 {% set position = paragraph.field_position.value %}
+{% set color = paragraph.field_background_color.value %}
+{% if color is not empty %}
+    {% set bg = color ~ ' has-bg'%}
+{% endif %}
 {% if paragraph.field_heading_size.value %}
     {% set heading = paragraph.field_heading_size.value %}
 {% else%}    
     {% set heading = "h2" %}
 {% endif %}
-  <div class="featured-media {{position}}">
+  <div class="featured-media {{bg}} {{position}}">
     <div class="inner">
         <div class="img">{{content.field_media}}</div>
         <div class="blurb">           
